@@ -20,3 +20,6 @@
 
 # Personal data root (or a symlink to it). Never commit.
 /data
+
+# Node.js
+node_modules/
