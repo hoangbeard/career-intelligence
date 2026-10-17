@@ -1,0 +1,40 @@
+# Job metadata, schema v5. Flat YAML: one `key: value` per line; lists are
+# JSON-style inline arrays. Timestamps are ISO 8601 with the profile timezone.
+# Paths are relative to the data root.
+schema: 5
+id: "JOB-YYYY-NNN"                 # unique, from scripts/next-job-id.mjs
+name: "<company-slug>/YYYY-MM-<role-slug>"   # equals the folder path under jobs/
+company: "<Company Display Name>"
+company_slug: "<company-slug>"
+role: "<Role Title>"
+# new -> analyzed | watching -> applied -> interviewing -> offer -> accepted | declined
+# rejected | skipped can happen at any point
+status: "new"
+priority: "unknown"                # high | medium | low | unknown
+location: "unknown"
+work_mode: "unknown"               # onsite | hybrid | remote | unknown
+source: "<url or original file name>"
+source_type: "unknown"             # url | pdf | docx | image | text | unknown
+source_urls: []                    # URLs seen while deduplicating
+parsed_at: "YYYY-MM-DDTHH:MM:SS+00:00"
+salary_range: "unknown"            # as stated in the JD, or "unknown"
+seniority: "unknown"               # inferred: senior | staff | principal | lead | manager | head
+domains: []                        # tags for filtering, e.g. ["cloud-security", "appsec"]
+role_mix: "unknown"                # estimated split in profile dimension order, e.g. "80/20"
+match_score: null                  # 0-100, from report.md
+career_score: null                 # 0-100, from report.md
+recommendation: null               # Strong Apply | Apply | Apply If Interested | Needs Info | Low Priority | Skip
+report: "jobs/<company-slug>/YYYY-MM-<role-slug>/report.md"
+cv_markdown: null                  # artifacts/cv.md path, when written
+cv_used: null                      # CV actually sent
+interview_prep: null               # interview-prep.md path, when written
+offer_review: null                 # offer-review.md path, when written
+contact_month: "YYYY-MM"
+date_source: "explicit"            # explicit | estimated
+contact_channel: null              # linkedin | email | phone | chat | referral | career_site | other
+contact_person: null               # the person you talk to; never inferred from a generic address
+contacted_at: null
+contact_history: []                # e.g. ["2026-07-24T09:30:00+00:00 | Sam reached out on LinkedIn"]
+conversation_history: []           # short summaries; no secrets
+status_changed_at: null
+last_checked_at: null

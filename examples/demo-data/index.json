@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "generated_on": "2026-10-17",
+  "job_count": 1,
+  "company_count": 1,
+  "jobs": [
+    {
+      "schema": 5,
+      "id": "JOB-2026-001",
+      "name": "globex-cloud/2026-10-application-security-lead",
+      "company": "Globex Cloud (fictional)",
+      "company_slug": "globex-cloud",
+      "role": "Application Security Lead",
+      "status": "analyzed",
+      "priority": "high",
+      "location": "Ho Chi Minh City, Vietnam",
+      "work_mode": "hybrid",
+      "source": "examples/jds/globex-cloud-appsec-lead.md",
+      "source_type": "text",
+      "source_urls": [],
+      "parsed_at": "2026-10-17T00:00:00+07:00",
+      "salary_range": "USD 5,500–7,000 per month gross; 13th-month salary stated",
+      "seniority": "lead",
+      "domains": [
+        "application-security",
+        "cloud-security",
+        "devsecops",
+        "secure-sdlc"
+      ],
+      "role_mix": "85/15",
+      "match_score": 82,
+      "career_score": 88,
+      "recommendation": "Apply",
+      "report": "jobs/globex-cloud/2026-10-application-security-lead/report.md",
+      "cv_markdown": "jobs/globex-cloud/2026-10-application-security-lead/artifacts/cv.md",
+      "cv_used": null,
+      "interview_prep": null,
+      "offer_review": null,
+      "contact_month": "2026-10",
+      "date_source": "explicit",
+      "contact_channel": "career_site",
+      "contact_person": null,
+      "contacted_at": null,
+      "contact_history": [
+        "2026-10-15 | User found the role on the Globex careers page; no direct contact"
+      ],
+      "conversation_history": [],
+      "status_changed_at": "2026-10-17T00:00:00+07:00",
+      "last_checked_at": "2026-10-17T00:00:00+07:00",
+      "id_year": 2026,
+      "path": "jobs/globex-cloud/2026-10-application-security-lead",
+      "metadata_path": "jobs/globex-cloud/2026-10-application-security-lead/metadata.yml"
+    }
+  ],
+  "companies": [
+    {
+      "slug": "globex-cloud",
+      "name": "Globex Cloud (fictional)",
+      "path": "companies/globex-cloud/profile.md"
+    }
+  ]
+}

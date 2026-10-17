@@ -10,6 +10,9 @@ project maintained on a best-effort basis; there is no bug bounty.
 
 ## Scope
 
-Example credentials, keys and tokens in this repository are placeholders or
-intentionally fake training data. If you find something that looks real,
-please report it as above.
+This repository holds tools only. It never holds personal data. Everything in
+`examples/` is fictional.
+
+If you find real personal data, a credential, or a skill that could leak data
+from a user's data root (for example into a CV or a message), please report it
+as above.
