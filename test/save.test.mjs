@@ -7,6 +7,7 @@ import { execFileSync } from "node:child_process";
 import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { isInstance } from "../scripts/lib/paths.mjs";
 import { addJob, script } from "./helpers.mjs";
 
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
@@ -87,7 +88,9 @@ test("a real conflict stops save and keeps the local commit", async () => {
   assert.equal(git(laptop, "status", "--porcelain"), "");
 });
 
-test("save refuses to run in the public skeleton", async () => {
+// Only in the skeleton: in a private instance <repo>/data is the user's real
+// data, and this test must never save it.
+test("save refuses to run in the public skeleton", { skip: isInstance() && "running inside a private instance" }, async () => {
   // With no REXCAREER_DATA the data root is <repo>/data, which does not exist here.
   const r = await script("save.mjs", ["x"], "");
   assert.equal(r.code, 1);

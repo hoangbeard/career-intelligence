@@ -22,6 +22,8 @@ export async function addJob(root, { company, slot, id, status = "new", extra = 
 }
 
 // Runs a script and returns { code, stdout, stderr } without throwing.
+// Tests always pass a temporary data root, or "" only where the test checks
+// that the skeleton has no data (see save.test.mjs).
 export async function script(name, args, dataRoot) {
   try {
     const { stdout, stderr } = await run(process.execPath, [join(repoRoot, "scripts", name), ...args], {
