@@ -35,6 +35,7 @@ async function profileStatus(dataRoot) {
   else {
     const fm = parseFrontMatter(await readFile(profile, "utf8"));
     if (!fm.language) lines.push("career profile: no front matter (language, timezone, currency); run the onboarding skill");
+    else if (!fm.name || String(fm.name).includes("<")) lines.push("career profile: not filled in yet (template placeholders); run the onboarding skill");
     else lines.push(`career profile: language ${fm.language}, timezone ${fm.timezone ?? "?"}, currency ${fm.currency ?? "?"}`);
   }
   const dir = join(dataRoot, "profile", "work-history");

@@ -61,7 +61,7 @@ test("doctor reports profile, open jobs with next steps and the next ID", async 
   await writeFile(join(root, "jobs/acme/2026-01-a/CONTEXT.md"), "# CONTEXT\n\n## Now\n\n- Status: interviewing\n- Next: 2026-11-03 panel interview\n");
   const r = await script("doctor.mjs", [], root);
   assert.equal(r.code, 0, r.stderr);
-  assert.match(r.stdout, /career profile: language en/);
+  assert.match(r.stdout, /career profile: not filled in yet/);
   assert.match(r.stdout, /work history: empty/);
   assert.match(r.stdout, /JOB-2026-004 interviewing .*next: 2026-11-03 panel interview/);
   assert.match(r.stdout, /next ID JOB-\d{4}-\d{3}/);
