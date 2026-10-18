@@ -37,7 +37,11 @@ function rebaseInProgress(top) {
 // other conflict aborts the rebase and throws.
 function rebase(top, dataRoot, dataRel) {
   const generated = new Set(GENERATED.map((f) => (dataRel === "." ? f : `${dataRel}/${f}`)));
-  if (git(top, ["rebase", "@{u}"], { allowFail: true }) !== null) return;
+  // Nothing new on the remote: push as is. Rebasing here would replay merge
+  // commits (such as a merge from the skeleton upstream) as new commits.
+  if (git(top, ["merge-base", "--is-ancestor", "@{u}", "HEAD"], { allowFail: true }) !== null) return;
+  // --rebase-merges keeps merge commits, so the upstream history stays shared.
+  if (git(top, ["rebase", "--rebase-merges", "@{u}"], { allowFail: true }) !== null) return;
   for (let round = 0; round < 50 && rebaseInProgress(top); round++) {
     const conflicts = conflictedFiles(top);
     const other = conflicts.filter((f) => !generated.has(f));

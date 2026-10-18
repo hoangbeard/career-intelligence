@@ -93,3 +93,39 @@ test("save refuses to run in the public skeleton", async () => {
   assert.equal(r.code, 1);
   assert.match(r.stderr, /Data root not found|public rexcareer skeleton/);
 });
+
+test("save keeps a merge from the skeleton upstream (no replayed commits)", async () => {
+  const { phone, laptop } = await twoSessions();
+  // An unrelated "upstream" history merged into the instance, like a skeleton update.
+  const base = join(phone, "..");
+  const upstream = join(base, "upstream");
+  git(base, "init", "-q", "-b", "main", upstream);
+  for (const [k, v] of [["user.name", "Up"], ["user.email", "up@example.com"], ["commit.gpgsign", "false"]]) git(upstream, "config", k, v);
+  await writeFile(join(upstream, "SKELETON.md"), "skeleton\n");
+  git(upstream, "add", "-A");
+  git(upstream, "commit", "-q", "-m", "skeleton");
+  const skeletonHead = git(upstream, "rev-parse", "HEAD");
+  git(phone, "fetch", "-q", upstream, "main:refs/remotes/upstream/main");
+  git(phone, "merge", "-q", "--allow-unrelated-histories", "--no-edit", "upstream/main");
+
+  // Another session pushes first, so the merge must be carried over a new remote commit.
+  await addJob(join(laptop, "data"), { company: "globex", slot: "2026-02-b", id: "JOB-2026-002" });
+  assert.equal((await script("save.mjs", ["laptop job"], join(laptop, "data"))).code, 0);
+
+  await addJob(join(phone, "data"), { company: "initech", slot: "2026-02-c", id: "JOB-2026-003" });
+  const r = await script("save.mjs", ["phone job after skeleton merge"], join(phone, "data"));
+  assert.equal(r.code, 0, r.stderr);
+  // The skeleton commit is still an ancestor: future upstream merges stay clean.
+  git(phone, "merge-base", "--is-ancestor", skeletonHead, "HEAD");
+  const subjects = git(phone, "log", "--format=%s").split("\n");
+  assert.equal(subjects.filter((s) => s === "skeleton").length, 1, "skeleton commit not duplicated");
+});
+
+test("save pushes without rebasing when the remote has nothing new", async () => {
+  const { phone } = await twoSessions();
+  git(phone, "commit", "-q", "--allow-empty", "-m", "local only");
+  const before = git(phone, "rev-parse", "HEAD");
+  await addJob(join(phone, "data"), { company: "globex", slot: "2026-02-b", id: "JOB-2026-002" });
+  assert.equal((await script("save.mjs", ["add job"], join(phone, "data"))).code, 0);
+  git(phone, "merge-base", "--is-ancestor", before, "HEAD");
+});
