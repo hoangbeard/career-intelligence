@@ -3,6 +3,9 @@
 // one. Updates metadata.yml and the "Job ID" line of the job's Markdown files
 // (never source.* or artifacts/).
 //
+// Also updates the company profile when that is safe: if no other job of the
+// same company holds the old ID, every mention of it there means this job.
+//
 //   node scripts/renumber-job.mjs <data>/jobs/<company>/<slot>
 import { existsSync } from "node:fs";
 import { readdir, readFile, writeFile } from "node:fs/promises";
@@ -37,7 +40,21 @@ export async function renumberJob(dataRoot, jobDir) {
       changed.push(file);
     }
   }
-  return { oldId, newId, changed, jobPath: relative(dataRoot, jobDir) };
+  const company = parseFlatYaml(metaText).company_slug;
+  const sameCompanyClash = others.some((j) => j.id === oldId && j.company_slug === company);
+  const profile = company ? join(dataRoot, "companies", company, "profile.md") : null;
+  const warnings = [];
+  if (profile && existsSync(profile)) {
+    const text = await readFile(profile, "utf8");
+    if (text.includes(oldId)) {
+      if (sameCompanyClash) warnings.push(`companies/${company}/profile.md mentions ${oldId}; two jobs of this company had it, fix by hand`);
+      else {
+        await writeFile(profile, text.replace(new RegExp(`\\b${oldId}\\b`, "g"), newId));
+        changed.push(`companies/${company}/profile.md`);
+      }
+    }
+  }
+  return { oldId, newId, changed, warnings, jobPath: relative(dataRoot, jobDir) };
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
@@ -49,7 +66,8 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   try {
     const r = await renumberJob(resolveDataRoot(), resolve(target));
     console.log(`${r.jobPath}: ${r.oldId} -> ${r.newId} (${r.changed.join(", ")})`);
-    console.log(`Check other files that mention ${r.oldId} (company profile Hiring intel, reports).`);
+    for (const w of r.warnings) console.log(`warning: ${w}`);
+    console.log(`Check reports/ for other mentions of ${r.oldId}.`);
   } catch (error) {
     console.error(error.message);
     process.exit(1);

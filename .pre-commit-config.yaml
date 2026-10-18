@@ -9,8 +9,12 @@ repos:
       - id: check-yaml
         args: ["--allow-multiple-documents"]
       - id: detect-private-key
+      # In a private instance, data/ holds files as received (notes, captures):
+      # leave their whitespace alone.
       - id: end-of-file-fixer
+        exclude: &data ^data/
       - id: trailing-whitespace
+        exclude: *data
   - repo: https://github.com/gitleaks/gitleaks
     rev: 83d9cd684c87d95d656c1458ef04895a7f1cbd8e  # frozen: v8.30.1
     hooks:

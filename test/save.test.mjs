@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { addJob, script } from "./helpers.mjs";
@@ -53,6 +53,8 @@ test("two sessions that pick the same ID: the later save renumbers its job", asy
     join(laptop, "data", "jobs", "initech", "2026-02-c", "report.md"),
     "# Report\n\n> **Job ID:** JOB-2026-002 · **Job Name:** `initech/2026-02-c`\n",
   );
+  await mkdir(join(laptop, "data", "companies", "initech"), { recursive: true });
+  await writeFile(join(laptop, "data", "companies", "initech", "profile.md"), "| 2026-02 | Engineer | JOB-2026-002 | new |\n");
   assert.equal((await script("save.mjs", ["phone job"], join(phone, "data"))).code, 0);
 
   // Both sessions changed the generated index too: that conflict is solved by rebuilding it.
@@ -68,6 +70,8 @@ test("two sessions that pick the same ID: the later save renumbers its job", asy
   );
   const report = await readFile(join(phone, "data", "jobs", "initech", "2026-02-c", "report.md"), "utf8");
   assert.match(report, /\*\*Job ID:\*\* JOB-2026-003/);
+  const company = await readFile(join(phone, "data", "companies", "initech", "profile.md"), "utf8");
+  assert.match(company, /JOB-2026-003/, "the company profile follows the new ID");
 });
 
 test("a real conflict stops save and keeps the local commit", async () => {

@@ -73,7 +73,7 @@ async function fixDuplicateIds(top, dataRoot) {
     const keep = group.find((j) => !local.includes(j)) ?? group[0];
     for (const job of group.filter((j) => j !== keep)) {
       const r = await renumberJob(dataRoot, join(dataRoot, job._path));
-      notes.push(`${r.jobPath}: ${r.oldId} was taken, now ${r.newId}`);
+      notes.push(`${r.jobPath}: ${r.oldId} was taken, now ${r.newId}`, ...r.warnings.map((w) => `warning: ${w}`));
     }
   }
   return notes;

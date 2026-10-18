@@ -96,6 +96,9 @@ ID that another session used first (the newer job gets a new ID).
   consistent.
 - If save says commit signing failed, ask the user to unlock their signing
   agent. Never turn signing off.
+- If your sandbox cannot write to `.git` (save fails with "Operation not
+  permitted" on `.git/index.lock`), say so plainly and ask the user to run the
+  same save command outside the sandbox. Never report the work as saved.
 
 ## Cloud sessions
 
