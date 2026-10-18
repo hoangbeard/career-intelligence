@@ -17,6 +17,11 @@ repos:
       - id: gitleaks
   - repo: local
     hooks:
+      - id: rexcareer-guard
+        name: keep personal data out of the public skeleton
+        entry: node scripts/guard.mjs
+        language: system
+        pass_filenames: true
       - id: sanitize-denylist
         name: sanitize denylist (employer names, domains, account IDs)
         entry: scripts/check-denylist.sh

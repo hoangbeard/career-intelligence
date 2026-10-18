@@ -66,7 +66,7 @@ only when the job is `interviewing` or the user asks.
 2. Set `interview_prep` in `metadata.yml`.
 3. Update `CONTEXT.md` and `notes.md` with new rounds.
 4. Merge new Hiring intel.
-5. `node scripts/build-index.mjs`.
+5. Save: `node scripts/save.mjs "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
 
 ## Reply
 

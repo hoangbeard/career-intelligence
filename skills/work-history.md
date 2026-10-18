@@ -12,6 +12,8 @@ all depend on it, so accuracy matters more than polish.
 
 One file per employer: `<data>/profile/work-history/<company-slug>.md`, from
 `templates/work-history.md`. Several roles at one employer stay in one file.
+Files whose name starts with `_` (for example `_index.md`) are notes, not
+employer files: do not score from them.
 
 ## Interview the user
 
@@ -39,5 +41,6 @@ those lines into a CV or a message.
 
 1. Write or merge the file. Keep earlier content unless the user corrects it.
 2. Set `verified: true` only after the user reads the file and confirms it.
-3. Tell the user which open jobs might score differently now. Offer to
+3. Save: `node scripts/save.mjs "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
+4. Tell the user which open jobs might score differently now. Offer to
    re-run the evaluation for them.

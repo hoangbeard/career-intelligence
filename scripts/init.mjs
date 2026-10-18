@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Creates an empty data root: node scripts/init.mjs <path>
 // Never overwrites existing files.
-import { existsSync } from "node:fs";
+import { existsSync, realpathSync } from "node:fs";
 import { copyFile, mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { repoRoot } from "./lib/paths.mjs";
@@ -36,11 +36,17 @@ const readme = join(root, "README.md");
 if (!existsSync(readme)) {
   await writeFile(
     readme,
-    "# Job search data\n\nPersonal data for rexcareer. Keep this folder private.\n" +
-      "Point the tools at it with `REXCAREER_DATA=<this folder>`.\n",
+    "# Job search data\n\nPersonal data for rexcareer. Keep it in a private repo.\n" +
+      "Agents edit these files through the skills and save with `node scripts/save.mjs`.\n",
   );
   created.push("README.md");
 }
 
 console.log(created.length ? `Created in ${root}:\n  ${created.join("\n  ")}` : `${root} is already set up.`);
-console.log(`\nNext:\n  export REXCAREER_DATA="${root}"\n  edit ${join(root, "profile/career-profile.md")}`);
+// <repo>/data needs no environment variable; any other place does.
+const repoData = join(repoRoot, "data");
+const inRepo = existsSync(repoData) && realpathSync(root) === realpathSync(repoData);
+console.log(
+  `\nNext:\n${inRepo ? "" : `  export REXCAREER_DATA="${root}"\n`}` +
+    '  ask your agent to "set me up" (onboarding skill), or edit profile/career-profile.md',
+);

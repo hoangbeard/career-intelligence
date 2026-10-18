@@ -14,9 +14,15 @@ fi
 patterns=$(grep -vE '^\s*(#|$)' "$denylist" || true)
 [[ -z "$patterns" ]] && exit 0
 
+# A private instance (marked by .rexcareer-instance) holds the owner's own
+# history under data/, employer names included. Check only the other files.
+instance=false
+[[ -f .rexcareer-instance ]] && instance=true
+
 status=0
 for file in "$@"; do
   [[ -f "$file" ]] || continue
+  if $instance && [[ $file == data/* ]]; then continue; fi
   if matches=$(grep -inIE -f <(printf '%s\n' "$patterns") -- "$file"); then
     echo "sanitize-denylist: blocked content in $file" >&2
     # Print line numbers only, never the matched text.

@@ -12,7 +12,9 @@ async function dirs(path) {
 }
 
 // Reads every <data>/jobs/<company>/<slot>/metadata.yml and validates IDs and names.
-export async function loadJobs(dataRoot) {
+// With allowDuplicates, duplicate IDs are returned instead of rejected, so the
+// save script can renumber them.
+export async function loadJobs(dataRoot, { allowDuplicates = false } = {}) {
   const jobsDir = join(dataRoot, "jobs");
   const jobs = [];
   const seen = new Map();
@@ -23,7 +25,9 @@ export async function loadJobs(dataRoot) {
       const path = `jobs/${company}/${slot}`;
       const meta = parseFlatYaml(await readFile(metaPath, "utf8"));
       if (!JOB_ID.test(meta.id ?? "")) throw new Error(`${path}: invalid job id "${meta.id ?? ""}"`);
-      if (seen.has(meta.id)) throw new Error(`${path}: duplicate job id ${meta.id} (also in ${seen.get(meta.id)})`);
+      if (seen.has(meta.id) && !allowDuplicates) {
+        throw new Error(`${path}: duplicate job id ${meta.id} (also in ${seen.get(meta.id)})`);
+      }
       seen.set(meta.id, path);
       const expected = `${company}/${slot}`;
       if (meta.name !== expected) throw new Error(`${path}: name "${meta.name ?? ""}" must be "${expected}"`);
@@ -31,4 +35,21 @@ export async function loadJobs(dataRoot) {
     }
   }
   return jobs;
+}
+
+// Groups of jobs that share an ID: [[jobA, jobB], ...].
+export function duplicateGroups(jobs) {
+  const byId = new Map();
+  for (const job of jobs) byId.set(job.id, [...(byId.get(job.id) ?? []), job]);
+  return [...byId.values()].filter((group) => group.length > 1);
+}
+
+// Next free ID for a year, given every job (duplicates allowed).
+export function nextJobId(jobs, year) {
+  let max = 0;
+  for (const job of jobs) {
+    const m = job.id.match(JOB_ID);
+    if (m && m[1] === String(year)) max = Math.max(max, Number(m[2]));
+  }
+  return `JOB-${year}-${String(max + 1).padStart(3, "0")}`;
 }

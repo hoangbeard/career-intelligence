@@ -29,6 +29,7 @@ rexcareer gives your agent a fixed method and a fixed place for everything:
 
 | Ask your agent | Skill |
 |---|---|
+| "Set me up" (first run) | [`onboarding`](skills/onboarding.md) |
 | "Analyze this JD" (link, file or text) | [`jd-pipeline`](skills/jd-pipeline.md) |
 | "Research this company" | [`company-analysis`](skills/company-analysis.md) |
 | "Is this salary fair?" | [`compensation-analysis`](skills/compensation-analysis.md) |
@@ -43,24 +44,42 @@ Supporting skills: [`job-evaluation`](skills/job-evaluation.md) and
 
 ## Quick start
 
-Requires Node.js 20.11 or later, and one of the supported agents.
+You use rexcareer through your own **private copy** of this repo (an
+*instance*). Your data lives in its `data/` folder and is committed, so the
+same job search opens on your laptop, in a cloud agent and on your phone.
+
+Requires Node.js 20.11 or later, git, the GitHub CLI (`gh`, logged in) and one
+of the supported agents.
 
 ```bash
 git clone https://github.com/hoangbeard-labs/rexcareer.git
-cd rexcareer
-
-# Create your private data folder (or use a private git repo).
-node scripts/init.mjs ~/career-data
-export REXCAREER_DATA=~/career-data
+rexcareer/scripts/create-instance.sh <your-github-user>/career
+cd career
 ```
 
-1. Fill in `~/career-data/profile/career-profile.md`: target roles, role mix,
-   language, pay.
-2. Ask your agent to "add my work history" and answer its questions.
-3. Paste a job description and say "analyze this JD".
+The script creates a private GitHub repo, copies the skeleton into it, adds a
+`data/` folder, and keeps this repo as the `upstream` remote. GitHub does not
+allow a private fork of a public repo, which is why it copies instead.
 
-Instead of `REXCAREER_DATA`, you can put the data folder (or a symlink to it)
-at `./data`. It is ignored by git.
+Then open your agent in that folder and:
+
+1. Say **"set me up"**. The onboarding skill asks a few questions (language,
+   target roles, role mix, pay) and builds your work history from your CV or
+   from a short interview.
+2. Paste a job link or description and say **"analyze this JD"**.
+
+Every skill ends with `node scripts/save.mjs`, which commits and pushes your
+data. The next session, on any device, starts with `scripts/doctor.mjs` and
+shows your open jobs and their next steps.
+
+To get new skills later:
+
+```bash
+git fetch upstream && git merge upstream/main
+```
+
+Only change files under `data/` in your instance. Put personal preferences in
+`data/instructions.md`; then upstream merges never conflict.
 
 ### Try the demo
 
@@ -73,6 +92,7 @@ export REXCAREER_DATA=/tmp/rexcareer-demo
 ```
 
 Then ask: "analyze the JD in examples/jds/acme-fintech-cloud-security.md".
+The demo is for trying the skills; nothing is saved to git outside an instance.
 
 ## Supported agents
 
@@ -87,6 +107,32 @@ wrappers that point to it.
 | Kilo | `kilo.jsonc` (points to `AGENTS.md`), `.agents/skills/` |
 | Oh My Pi | `AGENTS.md`, `.omp/skills/` |
 
+Claude Code also runs `scripts/doctor.mjs` at every session start through
+`.claude/settings.json`. Cursor runs it from `.cursor/environment.json`.
+
+## Cloud agents and your phone
+
+Work from anywhere with the same data. Setup:
+
+**Claude Code on the web** (claude.ai/code, and the Code tab of the Claude
+mobile app)
+
+1. Install the Claude GitHub App on your private instance repo
+   (github.com/apps/claude).
+2. At claude.ai/code, create an environment for the repo with network access
+   **Full**. Job sites are not on the default "Trusted" list, so job links
+   would fail to load. "Custom" works too if you list your usual job sites.
+3. Start a session on the repo and paste a job link. The session-start hook
+   pulls your latest data; `save.mjs` pushes the result to `main`.
+4. Back at your computer, `git pull`, or move the session to your terminal
+   with `claude --teleport`.
+
+**Cursor cloud agents**: enable cloud agents for the repo and allow internet
+access for job sites. `.cursor/environment.json` runs the doctor on start.
+
+Commits made in the cloud are not signed (there is no signing key there).
+Do not turn on "require signed commits" for your instance repo.
+
 ## How it works
 
 ```mermaid
@@ -98,15 +144,17 @@ flowchart LR
   Job --> Index[build-index.mjs<br/>INDEX.md, index.json]
 ```
 
-Your data folder:
+Your data folder (`data/` in your instance):
 
 ```text
-career-data/
+data/
 ├── profile/career-profile.md     # targets, role mix, language, pay
 ├── profile/work-history/*.md     # the only evidence source
 ├── companies/<company>/profile.md
 ├── jobs/<company>/YYYY-MM-<role>/
 ├── reports/
+├── instructions.md               # optional: your lasting preferences
+├── memory.md                     # optional: facts agents keep across sessions
 └── INDEX.md, index.json          # generated
 ```
 
@@ -119,6 +167,12 @@ All scripts are plain Node.js with no dependencies.
 
 | Command | Does |
 |---|---|
+| `scripts/create-instance.sh <owner>/<repo>` | Create your private instance |
+| `node scripts/doctor.mjs [--session-start]` | Setup check, open jobs, next steps |
+| `node scripts/save.mjs "<message>"` | Commit and push `data/`, fixing index and ID clashes |
+| `node scripts/migrate.mjs [--write]` | Upgrade an older data folder (dry run first) |
+| `node scripts/renumber-job.mjs <job dir>` | Give a job a new ID |
+| `node scripts/guard.mjs` | Fail if personal data is about to enter the skeleton |
 | `node scripts/init.mjs <path>` | Create an empty data folder |
 | `node scripts/data-root.mjs` | Print the data folder in use |
 | `node scripts/next-job-id.mjs <YYYY>` | Next free job ID |
@@ -128,8 +182,11 @@ All scripts are plain Node.js with no dependencies.
 
 ## Privacy notes
 
-- Keep your data folder private. It holds CVs, pay and conversations.
-- This repo never stores personal data. `examples/` is fictional.
+- Keep your instance repo private. It holds CVs, pay and conversations.
+- This repo never stores personal data. `examples/` is fictional, and
+  `scripts/guard.mjs` (pre-commit and CI) refuses `data/` in the skeleton.
+- Cloud agents copy your repo into their sandbox while they work. Use them
+  only if you are fine with that provider seeing your data.
 - Agents send what they read to their model provider. Check your agent's data
   settings before you use it with real data.
 

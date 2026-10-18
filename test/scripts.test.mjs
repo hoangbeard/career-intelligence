@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, realpathSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { addJob, script, tempDataRoot } from "./helpers.mjs";
@@ -21,7 +21,7 @@ test("init creates a data root and never overwrites", async () => {
   await script("init.mjs", [root]);
   assert.equal(await readFile(join(root, "profile/career-profile.md"), "utf8"), "mine");
   const r = await script("data-root.mjs", [], root);
-  assert.equal(r.stdout.trim(), root);
+  assert.equal(r.stdout.trim(), realpathSync(root));
 });
 
 test("next-job-id continues the sequence per year", async () => {

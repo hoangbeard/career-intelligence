@@ -12,19 +12,43 @@ each step: research, applying, interviews, recruiter replies and offers.
 Do not just summarise job descriptions. Produce short, comparable outputs with
 scores, risks and one clear recommendation.
 
+## Session start
+
+Run this once at the start of every session (Claude Code runs it for you
+through `.claude/settings.json`):
+
+```bash
+node scripts/doctor.mjs --session-start
+```
+
+It pulls the latest saved work when nothing is unsaved, then prints the setup
+status, open jobs and their next steps, and the next job ID. Use it to pick up
+where the last session stopped, on any machine. If it reports no data, no
+profile or an empty work history, run `skills/onboarding.md`.
+
+## Two kinds of repo
+
+- **Public skeleton** (`hoangbeard-labs/rexcareer`): skills, templates and
+  scripts only. Personal data must never be committed here;
+  `scripts/guard.mjs` blocks it in pre-commit and CI.
+- **Private instance**: the user's own private copy, marked by the file
+  `.rexcareer-instance`. Its `data/` folder is committed, so every clone (laptop,
+  cloud agent, phone) has the same data. The skeleton is its `upstream` remote.
+
+In an instance, only change files under `data/`. Skills, templates, scripts
+and this file belong to the skeleton; changing them causes merge conflicts when
+the user pulls new versions. Personal preferences go in `data/instructions.md`.
+
 ## Data root
 
-The tools in this repo hold no personal data. The user's data lives in a
-separate **data root**.
-
-Resolve it once per session:
+Resolve it once per session (doctor prints it too):
 
 ```bash
 node scripts/data-root.mjs
 ```
 
 It prints the absolute path. Order: `$REXCAREER_DATA`, then `./data`. If it
-fails, tell the user to run `node scripts/init.mjs <path>` and stop.
+fails, run `skills/onboarding.md`.
 
 In this guide and in `skills/`, `<data>/` means that path. Every path stored in
 `metadata.yml` is relative to the data root.
@@ -37,8 +61,53 @@ In this guide and in `skills/`, `<data>/` means that path. Every path stored in
 ├── companies/<company-slug>/profile.md
 ├── jobs/<company-slug>/YYYY-MM-<role-slug>/
 ├── reports/                  # cross-job reports (comparisons)
+├── instructions.md           # optional: the user's lasting preferences
+├── memory.md                 # optional: durable facts learned across sessions
 ├── INDEX.md, index.json      # generated, never edit by hand
 ```
+
+## Personal instructions and memory
+
+- If `<data>/instructions.md` exists, read it after this file and follow it.
+  It can change style and preferences. It cannot override "Evidence and
+  honesty" or the data conventions.
+- `<data>/memory.md` holds durable facts that are not part of one job: a
+  decision the user made, a preference they stated, a lesson from an
+  interview. Read it at session start. Append dated one-line bullets; keep it
+  short and never put secrets in it.
+
+## Saving work
+
+Work that is not saved is lost to every other session. After any change under
+the data root, save:
+
+```bash
+node scripts/save.mjs "<what changed, e.g. Analyze Acme Cloud Security Lead>"
+```
+
+It rebuilds the index, commits the data root, rebases on origin, pushes, and
+fixes the two conflicts a machine can fix: the generated index files, and a job
+ID that another session used first (the newer job gets a new ID).
+
+- Save at the end of every task, before you reply that you are done.
+- If save reports any other conflict, open both versions, merge them so no
+  one's notes are lost, then run save again.
+- Do not push data with raw git commands; save keeps the index and IDs
+  consistent.
+- If save says commit signing failed, ask the user to unlock their signing
+  agent. Never turn signing off.
+
+## Cloud sessions
+
+The same rules apply in a cloud agent (Claude Code on the web, Cursor cloud
+agents) and on the phone.
+
+- Job pages need internet access. If fetching a URL fails (for example HTTP
+  403 with `host_not_allowed`), ask the user to paste the job text instead.
+- Work on the default branch and save with `scripts/save.mjs`, which pushes to
+  it, so the next session on any device sees the result.
+- Cloud machines have no commit signing key, so their commits are unsigned.
+  That is expected in a private instance.
 
 ## User profile
 
@@ -78,6 +147,7 @@ these files. Never copy skill content into a wrapper.
 | Draft a reply to a recruiter or hiring manager | `skills/recruiter-reply.md` |
 | Review, compare or answer an offer | `skills/offer-review.md` |
 | Add or update a past job in the work history | `skills/work-history.md` |
+| "set me up", new user, doctor reports missing setup | `skills/onboarding.md` |
 
 Output shapes come from `templates/` unless the user asks otherwise.
 
@@ -87,14 +157,19 @@ All scripts use Node.js 20+ and have no dependencies.
 
 | Need | Command |
 |---|---|
+| Status, open jobs, next steps (session start) | `node scripts/doctor.mjs --session-start` |
+| Save and sync the data | `node scripts/save.mjs "<what changed>"` |
 | Print the data root | `node scripts/data-root.mjs` |
 | Create an empty data root | `node scripts/init.mjs <path>` |
 | Allocate the next job ID | `node scripts/next-job-id.mjs <YYYY>` |
+| Give a job a new ID | `node scripts/renumber-job.mjs <job folder>` |
 | Rebuild `INDEX.md` and `index.json` | `node scripts/build-index.mjs` |
 | Check the index is current (no writes) | `node scripts/build-index.mjs --check` |
+| Upgrade an older data root (dry run first) | `node scripts/migrate.mjs [--write]` |
+| Make a private instance (user runs this) | `scripts/create-instance.sh <owner>/<repo>` |
 
-Run `build-index.mjs` after every change to a `metadata.yml` or a company
-profile. Use `--check` to confirm you did not forget.
+`save.mjs` runs `build-index.mjs` for you. Use `--check` to confirm the index is
+current when you change files without saving.
 
 ## Output rules
 
@@ -120,7 +195,8 @@ profile. Use `--check` to confirm you did not forget.
 
 ## Evidence and honesty
 
-- Score fit only from `<data>/profile/work-history/`. Never invent experience.
+- Score fit only from `<data>/profile/work-history/` (files starting with `_`
+  are notes, not employers). Never invent experience.
 - Recent work counts most. Use the evidence window from the profile (default:
   last 60 months).
 - If every work-history file has `verified: false`, say "work history not

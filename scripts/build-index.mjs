@@ -142,9 +142,19 @@ async function main(argv) {
     return 0;
   }
 
+  // Leave files alone when only the date would change: fewer merge conflicts
+  // between sessions that save on different days.
   await mkdir(outDir, { recursive: true });
-  for (const [name, text] of Object.entries(outputs)) await writeFile(join(outDir, name), text);
-  console.log(`Wrote INDEX.md and index.json to ${outDir}: ${jobs.length} jobs, ${companies.length} companies`);
+  const written = [];
+  for (const [name, text] of Object.entries(outputs)) {
+    const path = join(outDir, name);
+    if (existsSync(path) && stripDate(await readFile(path, "utf8")) === stripDate(text)) continue;
+    await writeFile(path, text);
+    written.push(name);
+  }
+  console.log(
+    `${written.length ? `Wrote ${written.join(" and ")}` : "Index unchanged"} in ${outDir}: ${jobs.length} jobs, ${companies.length} companies`,
+  );
   return 0;
 }
 

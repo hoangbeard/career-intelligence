@@ -5,6 +5,7 @@
 ## Now
 
 - Status:
+- Next: (next action and date, for example "2026-11-03 follow up with recruiter")
 - Recommendation:
 - Blocker:
 - Open questions:

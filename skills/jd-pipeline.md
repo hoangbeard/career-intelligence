@@ -22,6 +22,9 @@ before scoring.
    fewer than 8 bullets, or a hidden client). Record what you find in
    `source_urls`. Same title and city alone is not a duplicate.
 4. For a new job:
+   - get the latest data first: `node scripts/doctor.mjs --session-start`
+     (fast-forwards from origin when nothing is unsaved), so another session's
+     job is not missed;
    - `node scripts/next-job-id.mjs <YYYY>` (contact year);
    - create `<data>/jobs/<company-slug>/YYYY-MM-<role-slug>/` with `source.*`,
      `jd.md`, `metadata.yml` (`status: new`, from `templates/metadata.yml`),
@@ -70,5 +73,5 @@ will apply, write a tailored CV to `artifacts/cv.md`:
    `role_mix`, `recommendation`, `cv_markdown`, `last_checked_at`,
    `status_changed_at`.
 4. If the job is (or just became) `interviewing`, run `skills/interview-prep.md`.
-5. `node scripts/build-index.mjs`.
+5. Save: `node scripts/save.mjs "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
 6. Reply with the full Decision Card.

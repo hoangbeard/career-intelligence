@@ -22,6 +22,8 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ matrix.node }}
+      - name: No personal data in the skeleton
+        run: node scripts/guard.mjs
       - name: Wrappers match skills/
         run: node scripts/sync-wrappers.mjs --check
       - name: Tests
@@ -29,4 +31,8 @@ jobs:
       - name: Demo data index is current
         env:
           REXCAREER_DATA: examples/demo-data
+        run: node scripts/build-index.mjs --check
+      - name: Instance data index is current
+        # Only in a private instance; the skeleton has no data/.
+        if: hashFiles('.rexcareer-instance') != ''
         run: node scripts/build-index.mjs --check

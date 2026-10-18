@@ -18,8 +18,8 @@
 # Tooling output
 *.sarif
 
-# Personal data root (or a symlink to it). Never commit.
-/data
+# data/ is NOT ignored: a private instance commits it. In the public skeleton
+# scripts/guard.mjs (pre-commit and CI) blocks it instead.
 
 # Node.js
 node_modules/
