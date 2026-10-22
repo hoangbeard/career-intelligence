@@ -1,4 +1,4 @@
-# rexcareer agent guide
+# career-intelligence agent guide
 
 This file is the contract for every agent (Claude Code, Codex, Cursor, Kilo,
 Oh My Pi, …). Harness-specific files only point here and to `skills/`.
@@ -18,7 +18,7 @@ Run this once at the start of every session (Claude Code runs it for you
 through `.claude/settings.json`):
 
 ```bash
-node scripts/doctor.mjs --session-start
+python3 scripts/doctor.py --session-start
 ```
 
 It pulls the latest saved work when nothing is unsaved, then prints the setup
@@ -28,11 +28,11 @@ profile or an empty work history, run `skills/onboarding.md`.
 
 ## Two kinds of repo
 
-- **Public skeleton** (`hoangbeard-labs/rexcareer`): skills, templates and
+- **Public skeleton** (`hoangbeard/career-intelligence`): skills, templates and
   scripts only. Personal data must never be committed here;
-  `scripts/guard.mjs` blocks it in pre-commit and CI.
+  `scripts/guard.py` blocks it in pre-commit and CI.
 - **Private instance**: the user's own private copy, marked by the file
-  `.rexcareer-instance`. Its `data/` folder is committed, so every clone (laptop,
+  `.career-intelligence-instance`. Its `data/` folder is committed, so every clone (laptop,
   cloud agent, phone) has the same data. The skeleton is its `upstream` remote.
 
 In an instance, only change files under `data/`. Skills, templates, scripts
@@ -44,10 +44,10 @@ the user pulls new versions. Personal preferences go in `data/instructions.md`.
 Resolve it once per session (doctor prints it too):
 
 ```bash
-node scripts/data-root.mjs
+python3 scripts/data_root.py
 ```
 
-It prints the absolute path. Order: `$REXCAREER_DATA`, then `./data`. If it
+It prints the absolute path. Order: `$CAREER_INTELLIGENCE_DATA`, then `./data`. If it
 fails, run `skills/onboarding.md`.
 
 In this guide and in `skills/`, `<data>/` means that path. Every path stored in
@@ -82,7 +82,7 @@ Work that is not saved is lost to every other session. After any change under
 the data root, save:
 
 ```bash
-node scripts/save.mjs "<what changed, e.g. Analyze Acme Cloud Security Lead>"
+python3 scripts/save.py "<what changed, e.g. Analyze Acme Cloud Security Lead>"
 ```
 
 It rebuilds the index, commits the data root, rebases on origin, pushes, and
@@ -107,10 +107,12 @@ agents) and on the phone.
 
 - Job pages need internet access. If fetching a URL fails (for example HTTP
   403 with `host_not_allowed`), ask the user to paste the job text instead.
-- Work on the default branch and save with `scripts/save.mjs`, which pushes to
+- Work on the default branch and save with `scripts/save.py`, which pushes to
   it, so the next session on any device sees the result.
-- Cloud machines have no commit signing key, so their commits are unsigned.
-  That is expected in a private instance.
+- Cloud machines may have no commit signing key, so their commits can be
+  unsigned. That is expected in a private instance.
+- The CV export needs the PDF tools. Run `scripts/setup-pdf.sh` once in a new
+  cloud environment before the first export.
 
 ## User profile
 
@@ -151,27 +153,32 @@ these files. Never copy skill content into a wrapper.
 | Review, compare or answer an offer | `skills/offer-review.md` |
 | Add or update a past job in the work history | `skills/work-history.md` |
 | "set me up", new user, doctor reports missing setup | `skills/onboarding.md` |
+| "export the CV", "I want the PDF", ready to apply | `skills/export-cv.md` |
 
 Output shapes come from `templates/` unless the user asks otherwise.
 
 ## Commands
 
-All scripts use Node.js 20+ and have no dependencies.
+Scripts need Python 3.10 or newer and nothing else, except the CV export: it
+needs the PDF tools, installed once with `scripts/setup-pdf.sh` (a `.venv/`
+with locked packages, and Chromium).
 
 | Need | Command |
 |---|---|
-| Status, open jobs, next steps (session start) | `node scripts/doctor.mjs --session-start` |
-| Save and sync the data | `node scripts/save.mjs "<what changed>"` |
-| Print the data root | `node scripts/data-root.mjs` |
-| Create an empty data root | `node scripts/init.mjs <path>` |
-| Allocate the next job ID | `node scripts/next-job-id.mjs <YYYY>` |
-| Give a job a new ID | `node scripts/renumber-job.mjs <job folder>` |
-| Rebuild `INDEX.md` and `index.json` | `node scripts/build-index.mjs` |
-| Check the index is current (no writes) | `node scripts/build-index.mjs --check` |
-| Upgrade an older data root (dry run first) | `node scripts/migrate.mjs [--write]` |
+| Status, open jobs, next steps (session start) | `python3 scripts/doctor.py --session-start` |
+| Save and sync the data | `python3 scripts/save.py "<what changed>"` |
+| Print the data root | `python3 scripts/data_root.py` |
+| Create an empty data root | `python3 scripts/init.py <path>` |
+| Allocate the next job ID | `python3 scripts/next_job_id.py <YYYY>` |
+| Give a job a new ID | `python3 scripts/renumber_job.py <job folder>` |
+| Rebuild `INDEX.md` and `index.json` | `python3 scripts/build_index.py` |
+| Check the index is current (no writes) | `python3 scripts/build_index.py --check` |
+| Upgrade an older data root (dry run first) | `python3 scripts/migrate.py [--write]` |
+| Export a job's CV to PDF (+ page previews) | `python3 scripts/export_cv.py <job folder>` |
+| Install the PDF tools (once per machine) | `scripts/setup-pdf.sh` |
 | Make a private instance (user runs this) | `scripts/create-instance.sh <owner>/<repo>` |
 
-`save.mjs` runs `build-index.mjs` for you. Use `--check` to confirm the index is
+`save.py` runs `build_index.py` for you. Use `--check` to confirm the index is
 current when you change files without saving.
 
 ## Output rules
@@ -226,7 +233,7 @@ current when you change files without saving.
   `YYYY-MM` is the month of first contact or application. Everything that
   belongs to one job stays in that folder.
 - **Job ID:** `JOB-YYYY-NNN`, unique, never reused. `YYYY` is the contact year;
-  the sequence restarts each year. Get it from `scripts/next-job-id.mjs`.
+  the sequence restarts each year. Get it from `scripts/next_job_id.py`.
 - **Job name:** `<company-slug>/YYYY-MM-<role-slug>`, equal to the folder path
   under `jobs/`.
 - Every agent-managed Markdown file in a job folder starts with this line under
@@ -245,7 +252,7 @@ current when you change files without saving.
   | `report.md` | Decision Card and evidence |
   | `interview-prep.md` | Interview prep pack |
   | `offer-review.md` | Offer analysis |
-  | `artifacts/` | Tailored CV (`cv.md`), message drafts, documents sent or received |
+  | `artifacts/` | Tailored CV (`cv.md`, exported PDF, `cv-preview/`), message drafts, documents sent or received |
 
 - **Company profiles:** one file per company at
   `<data>/companies/<company-slug>/profile.md`. Merge into it; never create a

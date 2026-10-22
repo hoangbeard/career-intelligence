@@ -1,11 +1,11 @@
 # Demo data
 
-A complete, fictional data root for trying rexcareer. Every person, company and
+A complete, fictional data root for trying career-intelligence. Every person, company and
 job here is made up. Any resemblance to real ones is a coincidence.
 
 ```bash
-cp -R examples/demo-data /tmp/rexcareer-demo
-export REXCAREER_DATA=/tmp/rexcareer-demo
+cp -R examples/demo-data /tmp/career-intelligence-demo
+export CAREER_INTELLIGENCE_DATA=/tmp/career-intelligence-demo
 ```
 
 `jobs/globex-cloud/` is real output from the `jd-pipeline` skill (run with

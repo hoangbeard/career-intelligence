@@ -2,7 +2,7 @@
 # JSON-style inline arrays. Timestamps are ISO 8601 with the profile timezone.
 # Paths are relative to the data root.
 schema: 5
-id: "JOB-YYYY-NNN"                 # unique, from scripts/next-job-id.mjs
+id: "JOB-YYYY-NNN"                 # unique, from scripts/next_job_id.py
 name: "<company-slug>/YYYY-MM-<role-slug>"   # equals the folder path under jobs/
 company: "<Company Display Name>"
 company_slug: "<company-slug>"
@@ -26,6 +26,7 @@ career_score: null                 # 0-100, from report.md
 recommendation: null               # Strong Apply | Apply | Apply If Interested | Needs Info | Low Priority | Skip
 report: "jobs/<company-slug>/YYYY-MM-<role-slug>/report.md"
 cv_markdown: null                  # artifacts/cv.md path, when written
+cv_pdf: null                       # exported PDF path (scripts/export_cv.py sets it)
 cv_used: null                      # CV actually sent
 interview_prep: null               # interview-prep.md path, when written
 offer_review: null                 # offer-review.md path, when written

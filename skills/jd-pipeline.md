@@ -8,7 +8,7 @@ description: "Analyze a job description end to end: capture and deduplicate it, 
 Entry point when the user shares a job: "analyze this JD" plus a URL, text,
 PDF, DOCX, image or a recruiter message.
 
-Resolve `<data>` first (`node scripts/data-root.mjs`). Read
+Resolve `<data>` first (`python3 scripts/data_root.py`). Read
 `<data>/profile/career-profile.md` and `<data>/profile/work-history/*.md`
 before scoring.
 
@@ -22,10 +22,10 @@ before scoring.
    fewer than 8 bullets, or a hidden client). Record what you find in
    `source_urls`. Same title and city alone is not a duplicate.
 4. For a new job:
-   - get the latest data first: `node scripts/doctor.mjs --session-start`
+   - get the latest data first: `python3 scripts/doctor.py --session-start`
      (fast-forwards from origin when nothing is unsaved), so another session's
      job is not missed;
-   - `node scripts/next-job-id.mjs <YYYY>` (contact year);
+   - `python3 scripts/next_job_id.py <YYYY>` (contact year);
    - create `<data>/jobs/<company-slug>/YYYY-MM-<role-slug>/` with `source.*`,
      `jd.md`, `metadata.yml` (`status: new`, from `templates/metadata.yml`),
      `notes.md`, `CONTEXT.md` (from `templates/context.md`) and `artifacts/`.
@@ -56,12 +56,16 @@ Recommendation: `Strong Apply`, `Apply`, `Apply If Interested`, `Needs Info`,
 key fact is missing.
 
 For `Strong Apply`, `Apply`, `Apply If Interested`, or when the user says they
-will apply, write a tailored CV to `artifacts/cv.md`:
+will apply, write a tailored CV to `artifacts/cv.md` in the format of
+`templates/cv.md`:
 
 - facts only from work history;
 - follow the CV rules in the profile (layout, length, title rules);
 - general skills and types of work only (see "Evidence and honesty" in
   `AGENTS.md`).
+
+If the user wants the PDF now ("I will apply", "send me the CV"), run
+`skills/export-cv.md` after the CV is written.
 
 ## E. Save and reply
 
@@ -73,5 +77,5 @@ will apply, write a tailored CV to `artifacts/cv.md`:
    `role_mix`, `recommendation`, `cv_markdown`, `last_checked_at`,
    `status_changed_at`.
 4. If the job is (or just became) `interviewing`, run `skills/interview-prep.md`.
-5. Save: `node scripts/save.mjs "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
+5. Save: `python3 scripts/save.py "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
 6. Reply with the full Decision Card.

@@ -14,10 +14,10 @@ fi
 patterns=$(grep -vE '^\s*(#|$)' "$denylist" || true)
 [[ -z "$patterns" ]] && exit 0
 
-# A private instance (marked by .rexcareer-instance) holds the owner's own
+# A private instance (marked by .career-intelligence-instance) holds the owner's own
 # history under data/, employer names included. Check only the other files.
 instance=false
-[[ -f .rexcareer-instance ]] && instance=true
+[[ -f .career-intelligence-instance ]] && instance=true
 
 status=0
 for file in "$@"; do

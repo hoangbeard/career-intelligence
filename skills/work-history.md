@@ -41,6 +41,6 @@ those lines into a CV or a message.
 
 1. Write or merge the file. Keep earlier content unless the user corrects it.
 2. Set `verified: true` only after the user reads the file and confirms it.
-3. Save: `node scripts/save.mjs "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
+3. Save: `python3 scripts/save.py "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
 4. Tell the user which open jobs might score differently now. Offer to
    re-run the evaluation for them.

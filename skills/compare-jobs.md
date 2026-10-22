@@ -42,4 +42,4 @@ Use `templates/comparison.md`. Save to
 The comparison does not change any `metadata.yml`. Update metadata only if the
 user decides to change a job's `status` or `priority`.
 
-Then save: `node scripts/save.mjs "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
+Then save: `python3 scripts/save.py "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).

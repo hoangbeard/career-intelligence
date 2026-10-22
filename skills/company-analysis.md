@@ -61,6 +61,6 @@ round felt) goes in the job's `notes.md`, not in Hiring intel.
 
 ## Save
 
-After writing the company profile, save: `node scripts/save.mjs "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`). When this skill runs
+After writing the company profile, save: `python3 scripts/save.py "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`). When this skill runs
 inside another skill (for example the JD pipeline), that skill saves once at
 the end instead.

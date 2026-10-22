@@ -42,7 +42,7 @@ the profile `language`.
    `status` and `status_changed_at`, and write the reason in `notes.md`.
 4. New facts from the recruiter (process, package, benefits): merge into the
    company Hiring intel, scoped to the job.
-5. Save: `node scripts/save.mjs "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
+5. Save: `python3 scripts/save.py "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
 
 ## Reply
 

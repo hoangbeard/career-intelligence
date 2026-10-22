@@ -10,11 +10,11 @@ that, every other skill works.
 
 ## 1. Check the setup
 
-Run `node scripts/doctor.mjs` and read its status.
+Run `python3 scripts/doctor.py` and read its status.
 
-- **No data yet, in a private instance** (the repo has `.rexcareer-instance`):
-  run `node scripts/init.mjs data`.
-- **No data yet, in the public skeleton** (no `.rexcareer-instance`): stop.
+- **No data yet, in a private instance** (the repo has `.career-intelligence-instance`):
+  run `python3 scripts/init.py data`.
+- **No data yet, in the public skeleton** (no `.career-intelligence-instance`): stop.
   Personal data must not go into the public repo. Explain how to make a
   private copy: `scripts/create-instance.sh <owner>/<repo>` (see README), then
   continue there.
@@ -61,7 +61,7 @@ the evidence and honesty rules.
 
 ## 5. Save and next step
 
-1. Save: `node scripts/save.mjs "Onboarding: profile and work history"`.
-2. Run `node scripts/doctor.mjs` and show the result.
+1. Save: `python3 scripts/save.py "Onboarding: profile and work history"`.
+2. Run `python3 scripts/doctor.py` and show the result.
 3. Tell the user what to do next: paste a job link, a JD or a recruiter
    message. They can do it from any device that opens this repo with an agent.

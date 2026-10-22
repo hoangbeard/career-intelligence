@@ -19,7 +19,9 @@
 *.sarif
 
 # data/ is NOT ignored: a private instance commits it. In the public skeleton
-# scripts/guard.mjs (pre-commit and CI) blocks it instead.
+# scripts/guard.py (pre-commit and CI) blocks it instead.
 
-# Node.js
-node_modules/
+# Python
+__pycache__/
+*.pyc
+.venv/

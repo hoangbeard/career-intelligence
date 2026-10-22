@@ -1,11 +1,11 @@
-# rexcareer
+# career-intelligence
 
 > Job search workflows for AI coding agents. Analyse job descriptions, track
 > applications, prepare for interviews, answer recruiters and review offers,
 > with your data kept in your own private folder.
 
-[![ci](https://github.com/hoangbeard-labs/rexcareer/actions/workflows/ci.yml/badge.svg)](https://github.com/hoangbeard-labs/rexcareer/actions/workflows/ci.yml)
-[![security](https://github.com/hoangbeard-labs/rexcareer/actions/workflows/security.yml/badge.svg)](https://github.com/hoangbeard-labs/rexcareer/actions/workflows/security.yml)
+[![ci](https://github.com/hoangbeard/career-intelligence/actions/workflows/ci.yml/badge.svg)](https://github.com/hoangbeard/career-intelligence/actions/workflows/ci.yml)
+[![security](https://github.com/hoangbeard/career-intelligence/actions/workflows/security.yml/badge.svg)](https://github.com/hoangbeard/career-intelligence/actions/workflows/security.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## Why
@@ -14,7 +14,7 @@ A job search produces a lot of scattered material: job descriptions, recruiter
 chats, company research, CV versions, interview notes, offers. Chat assistants
 forget it between sessions and score jobs against a vague idea of you.
 
-rexcareer gives your agent a fixed method and a fixed place for everything:
+career-intelligence gives your agent a fixed method and a fixed place for everything:
 
 - **Decision first.** Each job gets a short Decision Card with scores, risks and
   one recommendation.
@@ -38,22 +38,24 @@ rexcareer gives your agent a fixed method and a fixed place for everything:
 | "Reply to this recruiter" | [`recruiter-reply`](skills/recruiter-reply.md) |
 | "Review this offer" | [`offer-review`](skills/offer-review.md) |
 | "Add my last job to my history" | [`work-history`](skills/work-history.md) |
+| "Export my CV to PDF" | [`export-cv`](skills/export-cv.md) |
 
 Supporting skills: [`job-evaluation`](skills/job-evaluation.md) and
 [`career-prioritization`](skills/career-prioritization.md).
 
 ## Quick start
 
-You use rexcareer through your own **private copy** of this repo (an
+You use career-intelligence through your own **private copy** of this repo (an
 *instance*). Your data lives in its `data/` folder and is committed, so the
 same job search opens on your laptop, in a cloud agent and on your phone.
 
-Requires Node.js 20.11 or later, git, the GitHub CLI (`gh`, logged in) and one
-of the supported agents.
+Requires Python 3.10 or later, git, the GitHub CLI (`gh`, logged in) and one
+of the supported agents. The CV export also needs the PDF tools: run
+`scripts/setup-pdf.sh` once (it needs internet and takes about a minute).
 
 ```bash
-git clone https://github.com/hoangbeard-labs/rexcareer.git
-rexcareer/scripts/create-instance.sh <your-github-user>/career
+git clone https://github.com/hoangbeard/career-intelligence.git
+career-intelligence/scripts/create-instance.sh <your-github-user>/career
 cd career
 ```
 
@@ -68,8 +70,8 @@ Then open your agent in that folder and:
    from a short interview.
 2. Paste a job link or description and say **"analyze this JD"**.
 
-Every skill ends with `node scripts/save.mjs`, which commits and pushes your
-data. The next session, on any device, starts with `scripts/doctor.mjs` and
+Every skill ends with `python3 scripts/save.py`, which commits and pushes your
+data. The next session, on any device, starts with `scripts/doctor.py` and
 shows your open jobs and their next steps.
 
 To get new skills later:
@@ -87,8 +89,8 @@ Only change files under `data/` in your instance. Put personal preferences in
 analysis.
 
 ```bash
-cp -R examples/demo-data /tmp/rexcareer-demo
-export REXCAREER_DATA=/tmp/rexcareer-demo
+cp -R examples/demo-data /tmp/career-intelligence-demo
+export CAREER_INTELLIGENCE_DATA=/tmp/career-intelligence-demo
 ```
 
 Then ask: "analyze the JD in examples/jds/acme-fintech-cloud-security.md".
@@ -96,7 +98,7 @@ The demo is for trying the skills; nothing is saved to git outside an instance.
 
 ## Supported agents
 
-`skills/` holds every workflow. `scripts/sync-wrappers.mjs` generates thin
+`skills/` holds every workflow. `scripts/sync_wrappers.py` generates thin
 wrappers that point to it.
 
 | Agent | Reads |
@@ -107,7 +109,10 @@ wrappers that point to it.
 | Kilo | `kilo.jsonc` (points to `AGENTS.md`), `.agents/skills/` |
 | Oh My Pi | `AGENTS.md`, `.omp/skills/` |
 
-Claude Code also runs `scripts/doctor.mjs` at every session start through
+Tested end to end with Claude Code, Codex and Cursor, on a laptop and as cloud
+agents. Kilo and Oh My Pi use the same files but are not tested yet.
+
+Claude Code also runs `scripts/doctor.py` at every session start through
 `.claude/settings.json`. Cursor runs it from `.cursor/environment.json`.
 
 ## Cloud agents and your phone
@@ -123,15 +128,19 @@ mobile app)
    **Full**. Job sites are not on the default "Trusted" list, so job links
    would fail to load. "Custom" works too if you list your usual job sites.
 3. Start a session on the repo and paste a job link. The session-start hook
-   pulls your latest data; `save.mjs` pushes the result to `main`.
+   pulls your latest data; `save.py` pushes the result to `main`.
 4. Back at your computer, `git pull`, or move the session to your terminal
    with `claude --teleport`.
 
 **Cursor cloud agents**: enable cloud agents for the repo and allow internet
 access for job sites. `.cursor/environment.json` runs the doctor on start.
 
-Commits made in the cloud are not signed (there is no signing key there).
-Do not turn on "require signed commits" for your instance repo.
+Cloud agents sign commits with their own key or not at all. Do not turn on
+"require signed commits" for your instance repo.
+
+To export a CV to PDF in a cloud session, the agent runs
+`scripts/setup-pdf.sh` once per environment. The PDF is committed with your
+data, so you can open it from GitHub on your phone.
 
 ## How it works
 
@@ -141,7 +150,8 @@ flowchart LR
   Profile[profile/ in your data folder] --> P
   P --> Job[jobs/company/YYYY-MM-role/<br/>report.md, metadata.yml, cv.md]
   P --> Co[companies/company/profile.md]
-  Job --> Index[build-index.mjs<br/>INDEX.md, index.json]
+  Job --> Index[build_index.py<br/>INDEX.md, index.json]
+  Job --> PDF[export_cv.py<br/>CV PDF + page previews]
 ```
 
 Your data folder (`data/` in your instance):
@@ -163,28 +173,31 @@ Conventions are in [`AGENTS.md`](AGENTS.md). Output shapes are in
 
 ## Scripts
 
-All scripts are plain Node.js with no dependencies.
+All scripts are plain Python (3.10+) with no dependencies, except the CV
+export, which uses the locked packages in `requirements-pdf.txt` and Chromium.
 
 | Command | Does |
 |---|---|
 | `scripts/create-instance.sh <owner>/<repo>` | Create your private instance |
-| `node scripts/doctor.mjs [--session-start]` | Setup check, open jobs, next steps |
-| `node scripts/save.mjs "<message>"` | Commit and push `data/`, fixing index and ID clashes |
-| `node scripts/migrate.mjs [--write]` | Upgrade an older data folder (dry run first) |
-| `node scripts/renumber-job.mjs <job dir>` | Give a job a new ID |
-| `node scripts/guard.mjs` | Fail if personal data is about to enter the skeleton |
-| `node scripts/init.mjs <path>` | Create an empty data folder |
-| `node scripts/data-root.mjs` | Print the data folder in use |
-| `node scripts/next-job-id.mjs <YYYY>` | Next free job ID |
-| `node scripts/build-index.mjs [--check]` | Rebuild or check the index |
-| `node scripts/sync-wrappers.mjs [--check]` | Regenerate or check agent wrappers |
-| `npm test` | Run the tests |
+| `python3 scripts/doctor.py [--session-start]` | Setup check, open jobs, next steps |
+| `python3 scripts/save.py "<message>"` | Commit and push `data/`, fixing index and ID clashes |
+| `python3 scripts/migrate.py [--write]` | Upgrade an older data folder (dry run first) |
+| `python3 scripts/renumber_job.py <job dir>` | Give a job a new ID |
+| `python3 scripts/guard.py` | Fail if personal data is about to enter the skeleton |
+| `python3 scripts/init.py <path>` | Create an empty data folder |
+| `python3 scripts/data_root.py` | Print the data folder in use |
+| `python3 scripts/next_job_id.py <YYYY>` | Next free job ID |
+| `python3 scripts/build_index.py [--check]` | Rebuild or check the index |
+| `python3 scripts/export_cv.py <job dir>` | Export the job's CV to PDF, with page previews |
+| `scripts/setup-pdf.sh` | Install the PDF tools in `.venv/` (once per machine) |
+| `python3 scripts/sync_wrappers.py [--check]` | Regenerate or check agent wrappers |
+| `python3 -m unittest discover -s tests` | Run the tests |
 
 ## Privacy notes
 
 - Keep your instance repo private. It holds CVs, pay and conversations.
 - This repo never stores personal data. `examples/` is fictional, and
-  `scripts/guard.mjs` (pre-commit and CI) refuses `data/` in the skeleton.
+  `scripts/guard.py` (pre-commit and CI) refuses `data/` in the skeleton.
 - Cloud agents copy your repo into their sandbox while they work. Use them
   only if you are fine with that provider seeing your data.
 - Agents send what they read to their model provider. Check your agent's data
@@ -192,10 +205,12 @@ All scripts are plain Node.js with no dependencies.
 
 ## Roadmap
 
-- [ ] CV export to PDF (planned in a separate web app)
 - [ ] More languages for templates
 - [ ] Job tracker views
 
 ## License
 
 [MIT](LICENSE) © Pham Huy Hoang (HoangBeard)
+
+The CV template embeds the Inter font by Rasmus Andersson, under the SIL Open
+Font License 1.1 ([`scripts/cv/fonts/OFL.txt`](scripts/cv/fonts/OFL.txt)).

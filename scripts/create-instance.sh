@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Creates your private rexcareer instance: a private GitHub repo with the
+# Creates your private career-intelligence instance: a private GitHub repo with the
 # skeleton, a committed data/ folder, and the skeleton as the `upstream`
 # remote so you can pull new skills later.
 #
@@ -7,13 +7,13 @@
 # skeleton's history into a new private repo instead.
 #
 # Usage: scripts/create-instance.sh <owner>/<repo> [directory]
-# Needs: git, node 20.11+, and the GitHub CLI (gh) logged in.
+# Needs: git, Python 3.10+, and the GitHub CLI (gh) logged in.
 set -euo pipefail
 
 repo=${1:?usage: create-instance.sh <owner>/<repo> [directory]}
 dir=${2:-$(basename "$repo")}
 skeleton="$(cd "$(dirname "$0")/.." && pwd)"
-upstream_url=${REXCAREER_UPSTREAM:-$(git -C "$skeleton" remote get-url origin)}
+upstream_url=${CAREER_INTELLIGENCE_UPSTREAM:-$(git -C "$skeleton" remote get-url origin)}
 
 command -v gh >/dev/null || { echo "Install the GitHub CLI (gh) and run: gh auth login" >&2; exit 1; }
 [ -e "$dir" ] && { echo "$dir already exists" >&2; exit 1; }
@@ -23,7 +23,7 @@ if gh repo view "$repo" >/dev/null 2>&1; then
 fi
 
 echo "==> creating private repo $repo"
-gh repo create "$repo" --private --description "My job search, run with rexcareer" >/dev/null
+gh repo create "$repo" --private --description "My job search, run with career-intelligence" >/dev/null
 origin_url=$(gh repo view "$repo" --json url --jq .url).git
 
 echo "==> copying the skeleton into $dir"
@@ -32,10 +32,10 @@ cd "$dir"
 git remote rename origin upstream
 git remote add origin "$origin_url"
 
-touch .rexcareer-instance
-node scripts/init.mjs data >/dev/null
-git add .rexcareer-instance data
-git commit --quiet -m "Create private rexcareer instance"
+touch .career-intelligence-instance
+python3 scripts/init.py data >/dev/null
+git add .career-intelligence-instance data
+git commit --quiet -m "Create private career-intelligence instance"
 git push --quiet -u origin main
 
 cat <<MSG

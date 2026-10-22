@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/doctor.mjs\" --session-start",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/doctor.py\" --session-start",
             "timeout": 60
           }
         ]
@@ -15,13 +15,15 @@
   },
   "permissions": {
     "allow": [
-      "Bash(node scripts/doctor.mjs:*)",
-      "Bash(node scripts/data-root.mjs:*)",
-      "Bash(node scripts/next-job-id.mjs:*)",
-      "Bash(node scripts/build-index.mjs:*)",
-      "Bash(node scripts/save.mjs:*)",
-      "Bash(node scripts/renumber-job.mjs:*)",
-      "Bash(node scripts/init.mjs:*)",
+      "Bash(python3 scripts/doctor.py:*)",
+      "Bash(python3 scripts/data_root.py:*)",
+      "Bash(python3 scripts/next_job_id.py:*)",
+      "Bash(python3 scripts/build_index.py:*)",
+      "Bash(python3 scripts/save.py:*)",
+      "Bash(python3 scripts/renumber_job.py:*)",
+      "Bash(python3 scripts/init.py:*)",
+      "Bash(python3 scripts/export_cv.py:*)",
+      "Bash(scripts/setup-pdf.sh:*)",
       "WebFetch",
       "WebSearch"
     ]

@@ -1,0 +1,249 @@
+/* CV template ("classic"): one column, centered header, accent color for
+   section titles, role bars and list markers. Values that a CV may change
+   are CSS variables, set on each .resume-page by scripts/export_cv.py. */
+
+/* Static font files, not the variable font: Chromium embeds variable fonts
+   as Type 3 fonts, which some CV parsers (ATS) cannot read. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  src: url("fonts/Inter-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 400;
+  src: url("fonts/Inter-Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  src: url("fonts/Inter-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 700;
+  src: url("fonts/Inter-BoldItalic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 800;
+  src: url("fonts/Inter-ExtraBold.woff2") format("woff2");
+}
+
+@page {
+  size: var(--paper-width) var(--paper-height);
+  margin: 0;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+/* Off-screen copy used to measure blocks before they are split into pages. */
+.resume-measure-root {
+  left: -10000px;
+  opacity: 0;
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+}
+
+.resume-print-root .resume-page {
+  break-after: page;
+  overflow: hidden;
+  page-break-after: always;
+}
+
+.resume-print-root .resume-page:last-child {
+  break-after: auto;
+  page-break-after: auto;
+}
+
+.resume-page {
+  background: #ffffff;
+  color: #111827;
+  font-family: var(--resume-font-family);
+  font-size: var(--resume-font-size);
+  line-height: var(--resume-line-height);
+}
+
+.resume-page h1 {
+  font-size: 2.1em;
+  line-height: 1;
+  margin: 0 0 0.42rem;
+  letter-spacing: 0;
+}
+
+.resume-page h2 {
+  align-items: center;
+  border-bottom: 1.5px solid var(--resume-theme-color);
+  color: var(--resume-theme-color);
+  display: flex;
+  font-size: 1.08em;
+  font-weight: 800;
+  gap: 0.35rem;
+  line-height: 1.25;
+  margin: 1.55rem 0 0.58rem;
+  padding-bottom: 0.26rem;
+}
+
+.resume-page h3 {
+  background: color-mix(in srgb, var(--resume-theme-color) 9%, #ffffff);
+  border-left: 3px solid var(--resume-theme-color);
+  border-radius: 0.25rem;
+  color: var(--resume-theme-color);
+  font-size: 1.03em;
+  font-weight: 800;
+  line-height: 1.28;
+  margin: 0.85rem 0 0;
+  padding: 0.16rem 0.45rem 0.17rem 0.55rem;
+}
+
+.resume-page h3 + p,
+.resume-page h3 + p + p,
+.resume-page h3 + p + ul,
+.resume-page h3 + p + p + ul {
+  margin-left: 0;
+}
+
+.resume-page h3 + p,
+.resume-page h3 + p + p {
+  margin-top: 0;
+  margin-bottom: 0.35rem;
+}
+
+.resume-page p,
+.resume-page li {
+  text-align: var(--resume-text-align);
+  text-justify: inter-word;
+}
+
+.resume-page p {
+  margin-top: 0;
+}
+
+.resume-page p,
+.resume-page ul,
+.resume-page ol,
+.resume-page dl {
+  margin-bottom: var(--resume-paragraph-spacing);
+}
+
+.resume-page ul,
+.resume-page ol {
+  margin-top: 0.15rem;
+  padding-left: 1.35rem;
+}
+
+.resume-page ul {
+  list-style: disc outside;
+}
+
+.resume-page ol {
+  list-style: decimal outside;
+}
+
+.resume-page li {
+  margin-bottom: 0.28rem;
+  padding-left: 0.08rem;
+}
+
+.resume-page li::marker {
+  color: var(--resume-theme-color);
+  font-weight: 700;
+}
+
+.resume-page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Definition lists: "Role / Company" on the left, dates on the right. */
+.resume-page dl {
+  align-items: baseline;
+  column-gap: 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 0;
+}
+
+.resume-page h3 + dl {
+  margin-bottom: 0.5rem;
+}
+
+.resume-page dt,
+.resume-page dd {
+  margin: 0;
+}
+
+.resume-page dd {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.resume-header {
+  margin-bottom: 1.15rem;
+  text-align: center;
+}
+
+.resume-header-main {
+  min-width: 0;
+}
+
+.resume-header-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.65rem;
+  justify-content: center;
+}
+
+.resume-header-contact {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.2rem;
+}
+
+.resume-header-title {
+  flex-basis: 100%;
+  font-weight: 700;
+}
+
+.resume-header-break {
+  display: block;
+  flex-basis: 100%;
+  height: 0;
+  width: 100%;
+}
+
+.resume-inline-icon,
+.resume-section-icon {
+  color: var(--resume-theme-color);
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 0.92em;
+  max-height: 0.92em;
+  max-width: 0.92em;
+  width: 0.92em;
+}
+
+.resume-section-icon {
+  height: 1em;
+  max-height: 1em;
+  max-width: 1em;
+  width: 1em;
+}

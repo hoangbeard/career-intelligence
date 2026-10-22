@@ -21,9 +21,9 @@ repos:
       - id: gitleaks
   - repo: local
     hooks:
-      - id: rexcareer-guard
+      - id: career-intelligence-guard
         name: keep personal data out of the public skeleton
-        entry: node scripts/guard.mjs
+        entry: python3 scripts/guard.py
         language: system
         pass_filenames: true
       - id: sanitize-denylist

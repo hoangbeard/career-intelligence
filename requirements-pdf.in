@@ -1,0 +1,7 @@
+# Only needed to export a CV to PDF (scripts/export_cv.py).
+# Install with scripts/setup-pdf.sh. Regenerate the locked file with:
+#   pip-compile --generate-hashes --strip-extras requirements-pdf.in -o requirements-pdf.txt
+markdown-it-py[linkify]
+mdit-py-plugins
+PyYAML
+playwright

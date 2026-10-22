@@ -60,4 +60,4 @@ for) or `Decline`, and the next action with a date.
    job.
 3. On the final answer: `status: accepted` or `declined`, `status_changed_at`,
    reason in `notes.md`. If accepted, offer to close other active jobs politely.
-4. Save: `node scripts/save.mjs "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
+4. Save: `python3 scripts/save.py "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
