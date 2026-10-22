@@ -34,6 +34,8 @@ git remote add origin "$origin_url"
 
 touch .career-intelligence-instance
 python3 scripts/init.py data >/dev/null
+# Dependency updates happen in the skeleton and arrive with upstream merges.
+git rm --quiet .github/dependabot.yml
 git add .career-intelligence-instance data
 git commit --quiet -m "Create private career-intelligence instance"
 git push --quiet -u origin main

@@ -5,7 +5,7 @@ phone and the laptop)."""
 import json
 import unittest
 
-from helpers import add_job, git, script, temp_dir
+from helpers import REPO_ROOT, add_job, git, script, temp_dir
 from lib.paths import INSTANCE_MARKER, is_instance
 
 
@@ -74,6 +74,31 @@ class SaveTest(unittest.TestCase):
         self.assertIn("**Job ID:** JOB-2026-003", report)
         profile = (phone / "data/companies/initech/profile.md").read_text()
         self.assertIn("JOB-2026-003", profile, "the company profile follows the new ID")
+
+    def test_two_sessions_appending_to_memory_both_lines_are_kept(self):
+        phone, laptop = two_sessions()
+        for repo in (phone, laptop):
+            (repo / ".gitattributes").write_text((REPO_ROOT / ".gitattributes").read_text())
+            (repo / "data" / "memory.md").write_text("# Memory\n\n- seed\n")
+        git(phone, "add", "-A")
+        git(phone, "commit", "-q", "-m", "memory file")
+        git(phone, "push", "-q")
+        git(laptop, "fetch", "-q")
+        git(laptop, "reset", "-q", "--hard", "origin/main")
+
+        with (phone / "data" / "memory.md").open("a") as f:
+            f.write("- phone fact\n")
+        self.assertEqual(script("save.py", ["phone memory"], phone / "data").code, 0)
+        with (laptop / "data" / "memory.md").open("a") as f:
+            f.write("- laptop fact\n")
+        r = script("save.py", ["laptop memory"], laptop / "data")
+        self.assertEqual(r.code, 0, r.stderr)
+
+        git(phone, "pull", "-q")
+        memory = (phone / "data" / "memory.md").read_text()
+        self.assertIn("- phone fact", memory)
+        self.assertIn("- laptop fact", memory)
+        self.assertNotIn("<<<<<<<", memory)
 
     def test_a_real_conflict_stops_save_and_keeps_the_local_commit(self):
         phone, laptop = two_sessions()

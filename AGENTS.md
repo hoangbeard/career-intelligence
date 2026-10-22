@@ -39,6 +39,11 @@ In an instance, only change files under `data/`. Skills, templates, scripts
 and this file belong to the skeleton; changing them causes merge conflicts when
 the user pulls new versions. Personal preferences go in `data/instructions.md`.
 
+One exception: an instance has no `.github/dependabot.yml`. Dependency updates
+happen in the skeleton and reach the instance through `git merge
+upstream/main`. If that merge reports a conflict on this file (changed in the
+skeleton, deleted here), keep it deleted: `git rm .github/dependabot.yml`.
+
 ## Data root
 
 Resolve it once per session (doctor prints it too):
@@ -90,6 +95,9 @@ fixes the two conflicts a machine can fix: the generated index files, and a job
 ID that another session used first (the newer job gets a new ID).
 
 - Save at the end of every task, before you reply that you are done.
+- If save says a job ID was taken and gives a new one, use the new ID in your
+  reply and everywhere after. Tell the user the ID changed.
+- `data/memory.md` merges by itself when two sessions append to it.
 - If save reports any other conflict, open both versions, merge them so no
   one's notes are lost, then run save again.
 - Do not push data with raw git commands; save keeps the index and IDs

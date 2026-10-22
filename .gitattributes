@@ -1,0 +1,3 @@
+# data/memory.md only grows by appended lines. When two sessions append at the
+# same time, keep both sides instead of stopping with a conflict.
+data/memory.md merge=union
