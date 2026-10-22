@@ -1,6 +1,6 @@
 ---
 name: export-cv
-description: "Export a job's tailored CV (artifacts/cv.md) to PDF with the CV template, check the page previews, and record the file in metadata. Use when the user asks for the PDF, says they will apply now, or wants to send the CV."
+description: "Export a job's tailored CV (artifacts/cv.md) to PDF with the CV template, check the page previews, and record the file in metadata. Used by the JD pipeline when the recommendation is Strong Apply or Apply, and when the user asks for the PDF, says they will apply, or wants to send the CV."
 ---
 
 # Skill: Export CV to PDF

@@ -64,8 +64,10 @@ will apply, write a tailored CV to `artifacts/cv.md` in the format of
 - general skills and types of work only (see "Evidence and honesty" in
   `AGENTS.md`).
 
-If the user wants the PDF now ("I will apply", "send me the CV"), run
-`skills/export-cv.md` after the CV is written.
+Then export the PDF with `skills/export-cv.md` when the recommendation is
+`Strong Apply` or `Apply`, or when the user says they will apply. For
+`Apply If Interested`, offer the PDF instead. If the PDF tools cannot be
+installed, still finish the Decision Card and say the PDF is missing.
 
 ## E. Save and reply
 
@@ -75,7 +77,7 @@ If the user wants the PDF now ("I will apply", "send me the CV"), run
 2. Update `CONTEXT.md` and `notes.md` (paths to artifacts).
 3. Update `metadata.yml`: `status` (`analyzed` or `watching`), scores,
    `role_mix`, `recommendation`, `cv_markdown`, `last_checked_at`,
-   `status_changed_at`.
+   `status_changed_at` (`cv_pdf` is set by the export).
 4. If the job is (or just became) `interviewing`, run `skills/interview-prep.md`.
 5. Save: `python3 scripts/save.py "<what changed>"` (rebuilds the index, commits and pushes; see "Saving work" in `AGENTS.md`).
-6. Reply with the full Decision Card.
+6. Reply with the full Decision Card, plus the PDF path when you exported one.

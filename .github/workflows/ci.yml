@@ -50,6 +50,8 @@ jobs:
           python-version: "3.14"
       - name: Install the PDF tools
         run: scripts/setup-pdf.sh
+      - name: Install pdftotext (checks the PDF text layer)
+        run: sudo apt-get install -y --no-install-recommends poppler-utils
       - name: Export tests (must run, not skip)
         run: |
           .venv/bin/python -m unittest discover -s tests -p 'test_export_cv.py' -v 2>&1 | tee test.log

@@ -233,7 +233,9 @@ def export_pdf(markdown: str, pdf_path: Path, preview_dir: Path | None) -> dict:
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as p:
         try:
-            browser = p.chromium.launch()
+            # On Linux, font hinting rounds glyph positions, and PDF text then reads as
+            # split words ("Securit y") in CV parsers. Turn it off everywhere.
+            browser = p.chromium.launch(args=["--font-render-hinting=none"])
         except PlaywrightError as error:
             raise RuntimeError(f"cannot start Chromium ({error}). Run once: scripts/setup-pdf.sh") from error
         try:

@@ -113,6 +113,20 @@ class ExportTest(unittest.TestCase):
         self.assertIn('cv_pdf: "jobs/globex-cloud/2026-10-application-security-lead/artifacts/Demo_CV.pdf"',
                       (job / "metadata.yml").read_text())
 
+    @unittest.skipUnless(shutil.which("pdftotext"), "pdftotext (poppler-utils) not installed")
+    def test_pdf_text_has_no_split_words(self):
+        # CV parsers read the PDF text layer. Words must come out whole.
+        pdf = temp_dir() / "cv.pdf"
+        cv = (REPO_ROOT / "examples/demo-data/jobs/globex-cloud/2026-10-application-security-lead/artifacts/cv.md")
+        export_cv.export_pdf(cv.read_text(encoding="utf-8"), pdf, None)
+
+        def words(*flags):
+            return subprocess.run(["pdftotext", *flags, str(pdf), "-"], capture_output=True, text=True).stdout.split()
+
+        self.assertEqual(len(words()), len(words("-raw")))
+        for word in ("Security", "STRIDE", "Vulnerability", "Application"):
+            self.assertIn(word, words())
+
     def test_manual_page_break_starts_a_new_page(self):
         result = export_cv.export_pdf(CV, temp_dir() / "cv.pdf", None)
         self.assertEqual(result["pages"], 2)
