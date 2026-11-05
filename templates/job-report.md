@@ -16,7 +16,7 @@ Main reason: <one sentence>
 
 | Item | Summary | Source · confidence |
 |---|---|---|
-| Overview | | |
+| Overview | Founding year, latest key milestone, ownership, products | |
 | Finance and business | | |
 | Employee reviews | | |
 | Hiring activity | | |

@@ -17,6 +17,10 @@ updated_at: "2026-10-17"
 A fictional SaaS platform for API management, sold to mid-size companies. HQ in
 Singapore. Engineering hubs in Ho Chi Minh City and Warsaw. About 600 staff.
 
+## History
+
+`not checked`: the company is fictional.
+
 ## Finance and business
 
 Series C. No revenue or profit figures. Confidence: low (fictional).

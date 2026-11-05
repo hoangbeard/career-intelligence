@@ -20,6 +20,15 @@ updated_at: "YYYY-MM-DD"
 
 <Main products or services, customers, ownership, HQ and offices relevant to the user.>
 
+## History
+
+<!-- 8-15 key milestones, oldest first, from founding to today: founding, ownership
+     and funding changes, major acquisitions, expansions, the local office, leadership
+     changes, crises. If sources disagree on a date, give both. -->
+| Date | Milestone | Source · confidence |
+|---|---|---|
+| YYYY | Founded by <founder> in <place> | |
+
 ## Finance and business
 
 <Revenue, funding, profit or loss, growth, layoffs, market position.>

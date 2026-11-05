@@ -34,8 +34,8 @@ use them in the steps below, and do not add them to the report.
 
 ### 1. Company
 
-Run `skills/company-analysis.md`. Summarise its eight sections in the **Company**
-table of the card, with sources and confidence. Do not score the company again.
+Run `skills/company-analysis.md`. Summarise its sections in the **Company**
+table of the card, with sources and confidence; History goes in the Overview row. Do not score the company again.
 
 ### 2. Technical match
 

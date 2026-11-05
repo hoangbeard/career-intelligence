@@ -1,6 +1,6 @@
 ---
 name: company-analysis
-description: "Research an employer from public sources (business and finances, employee reviews, hiring, pay, interview process, leadership, controversies), score it, and record hiring intel in its company file. Use for every new job analysis, or when the user shares company facts."
+description: "Research an employer from public sources (history, business and finances, employee reviews, hiring, pay, interview process, leadership, controversies), score it, and record hiring intel in its company file. Use for every new job analysis, or when the user shares company facts."
 ---
 
 # Skill: Company analysis
@@ -12,15 +12,16 @@ Merge into it; never create a second file.
 Reuse the research when `researched_at` is within the last 90 days. Otherwise
 research and set `researched_at` to today. If the file still has an older
 layout, move its content into the template sections and keep **Applications**
-and **Hiring intel** complete.
+and **Hiring intel** complete. If only a section is missing, research that section.
 
 ## Research checklist
 
-Cover all eight. Search the company's legal name and its local name.
+Cover all nine. Search the company's legal name and its local name.
 
 | Section | Look for | Where to look |
 |---|---|---|
 | Overview | Legal entity, ownership, products, customers, offices | Company site, business registry |
+| History | Dated milestones from founding to today: founding, ownership and funding changes, major acquisitions, expansions, the local office, leadership changes, crises | Company site, press releases, business registry, press |
 | Finance and business | Revenue, funding, profit or loss, growth, layoffs | Filings, annual reports, press |
 | Employee reviews | Rating, review count and date, recurring themes | Employer review sites and local job boards |
 | Hiring activity | Open roles, freezes, turnover signals | Careers page, job boards, LinkedIn |
