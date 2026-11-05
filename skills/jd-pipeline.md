@@ -37,16 +37,19 @@ before scoring.
 - Responsibilities, grouped.
 - Role mix: estimate the share of each dimension in the profile's role mix.
 - Who would succeed in this role.
-- Company facts: merge into the company profile (`skills/company-analysis.md`).
-- Culture or reputation signals: record source and confidence; keep them out of
-  the skill scoring.
 
-## C. Match against work history
+## C. Research the company
 
-Build the Requirement Match Matrix for every must-have
-(`skills/job-evaluation.md`, section 3). Never invent evidence.
+Run `skills/company-analysis.md` before scoring, for every recommendation: the
+company rows of the Decision Card come from it. It reuses research from the last
+90 days. If a source cannot be reached, record that and carry on.
 
-## D. Decide
+## D. Match against work history
+
+Build the Requirement Match Matrix for every must-have and the soft skills table
+(`skills/job-evaluation.md`, steps 2 and 3). Never invent evidence.
+
+## E. Decide
 
 Run `skills/job-evaluation.md` and `skills/career-prioritization.md`. Use
 `skills/compensation-analysis.md` when pay is mentioned or unclear.
@@ -69,11 +72,12 @@ Then export the PDF with `skills/export-cv.md` when the recommendation is
 `Apply If Interested`, offer the PDF instead. If the PDF tools cannot be
 installed, still finish the Decision Card and say the PDF is missing.
 
-## E. Save and reply
+## F. Save and reply
 
-1. `report.md`: Decision Card first, from `templates/job-report.md`. For `Skip`
-   or `Low Priority`: card, risks and sources only. Keep the "Study" line on the
-   card to 2–3 items. Do not create `interview-prep.md` here.
+1. `report.md`: Decision Card first, from `templates/job-report.md`, at most 60
+   lines. For `Skip` or `Low Priority`: the full card, then risks and sources
+   only. Keep the study list on the card to 2–3 items. Do not create
+   `interview-prep.md` here.
 2. Update `CONTEXT.md` and `notes.md` (paths to artifacts).
 3. Update `metadata.yml`: `status` (`analyzed` or `watching`), scores,
    `role_mix`, `recommendation`, `cv_markdown`, `last_checked_at`,

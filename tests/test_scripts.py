@@ -13,7 +13,7 @@ class ScriptsTest(unittest.TestCase):
     def test_init_creates_a_data_root_and_never_overwrites(self):
         root = temp_dir()
         self.assertEqual(script("init.py", [str(root)]).code, 0)
-        for p in ["profile/career-profile.md", "profile/work-history", "companies", "jobs", "reports"]:
+        for p in ["profile/career-profile.md", "profile/work-history", "jobs", "reports"]:
             self.assertTrue((root / p).exists(), p)
         (root / "profile/career-profile.md").write_text("mine")
         script("init.py", [str(root)])

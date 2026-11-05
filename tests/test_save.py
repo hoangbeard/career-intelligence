@@ -55,9 +55,7 @@ class SaveTest(unittest.TestCase):
         add_job(phone / "data", "globex", "2026-02-b", "JOB-2026-002")
         job = add_job(laptop / "data", "initech", "2026-02-c", "JOB-2026-002")
         (job / "report.md").write_text("# Report\n\n> **Job ID:** JOB-2026-002 · **Job Name:** `initech/2026-02-c`\n")
-        company = laptop / "data" / "companies" / "initech"
-        company.mkdir(parents=True)
-        (company / "profile.md").write_text("| 2026-02 | Engineer | JOB-2026-002 | new |\n")
+        (laptop / "data/jobs/initech/company.md").write_text("| 2026-02 | Engineer | JOB-2026-002 | new |\n")
         self.assertEqual(script("save.py", ["phone job"], phone / "data").code, 0)
 
         # Both sessions changed the generated index too: that conflict is solved by rebuilding it.
@@ -72,7 +70,7 @@ class SaveTest(unittest.TestCase):
         )
         report = (phone / "data/jobs/initech/2026-02-c/report.md").read_text()
         self.assertIn("**Job ID:** JOB-2026-003", report)
-        profile = (phone / "data/companies/initech/profile.md").read_text()
+        profile = (phone / "data/jobs/initech/company.md").read_text()
         self.assertIn("JOB-2026-003", profile, "the company profile follows the new ID")
 
     def test_two_sessions_appending_to_memory_both_lines_are_kept(self):

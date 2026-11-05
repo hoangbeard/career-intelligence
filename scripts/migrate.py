@@ -12,8 +12,12 @@ Changes (each one is skipped when already done, so running twice is safe):
   - profile/career-profile.md: add the front matter block if it has none.
   - profile/work-history/README.md: rename to _index.md (files starting with
     "_" are not employer files).
-Also reports relative Markdown links that point to missing files. Report and
-note text is never rewritten.
+  - companies/<slug>/profile.md: move to jobs/<slug>/company.md and update
+    mentions of the old path in job files, reports/ and memory.md. Never touches
+    source.*, jd.md or artifacts/ (kept as received or as sent). A company with a
+    file at both places is reported as a conflict and left alone.
+Also reports relative Markdown links that point to missing files. Apart from
+the old company path, report and note text is never rewritten.
 """
 
 from __future__ import annotations
@@ -26,6 +30,10 @@ from pathlib import Path
 from urllib.parse import unquote
 
 from lib.paths import resolve_data_root
+
+# A path from the data root, not part of a URL such as itviec.com/companies/x/profile.md.
+OLD_COMPANY_PATH = re.compile(r"(?<![\w./:-])companies/([a-z0-9][a-z0-9-]*)/profile\.md")
+JOB_FILES_WITH_PATHS = {"report.md", "notes.md", "CONTEXT.md", "interview-prep.md", "offer-review.md", "metadata.yml"}
 
 
 def _option(argv: list[str], name: str, fallback: str) -> str:
@@ -86,6 +94,60 @@ def profile_front_matter(name: str, language: str, timezone: str, currency: str,
     )
 
 
+def _may_mention_company_path(rel_path: str) -> bool:
+    parts = rel_path.split("/")
+    if parts[0] == "jobs":
+        return (len(parts) == 4 and parts[3] in JOB_FILES_WITH_PATHS) or (len(parts) == 3 and parts[2] == "company.md")
+    if parts[0] == "reports":
+        return rel_path.endswith(".md")
+    return rel_path == "memory.md" or (parts[0] == "companies" and parts[-1] == "profile.md")
+
+
+def _remove_empty_companies(old_root: Path) -> None:
+    for directory in [*(p for p in old_root.iterdir() if p.is_dir()), old_root]:
+        (directory / ".gitkeep").unlink(missing_ok=True)
+        if not any(directory.iterdir()):
+            directory.rmdir()
+
+
+def migrate_companies(data_root: Path, write: bool) -> tuple[list[str], list[str]]:
+    old_root = data_root / "companies"
+    jobs_root = data_root / "jobs"
+    if not old_root.is_dir():
+        return [], []
+    changes: list[str] = []
+    conflicts: list[str] = []
+    moved: set[str] = set()
+    for source in sorted(old_root.glob("*/profile.md")):
+        slug = source.parent.name
+        target = jobs_root / slug / "company.md"
+        if target.exists():
+            conflicts.append(f"companies/{slug}/profile.md and jobs/{slug}/company.md both exist; merge them by hand")
+            continue
+        moved.add(slug)
+        changes.append(f"companies/{slug}/profile.md -> jobs/{slug}/company.md")
+        if write:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            source.rename(target)
+
+    def new_path(match: re.Match) -> str:
+        return f"jobs/{match.group(1)}/company.md" if match.group(1) in moved else match.group(0)
+
+    for path in _walk(data_root):
+        rel = path.relative_to(data_root).as_posix()
+        if not _may_mention_company_path(rel):
+            continue
+        text = path.read_text(encoding="utf-8")
+        updated = OLD_COMPANY_PATH.sub(new_path, text)
+        if updated != text:
+            changes.append(f"{rel}: update company profile path")
+            if write:
+                path.write_text(updated, encoding="utf-8", newline="")
+    if write:
+        _remove_empty_companies(old_root)
+    return changes, conflicts
+
+
 def migrate(data_root: Path, argv: list[str] | None = None) -> dict:
     argv = argv or []
     write = "--write" in argv
@@ -126,10 +188,14 @@ def migrate(data_root: Path, argv: list[str] | None = None) -> dict:
         if write:
             readme.rename(readme.with_name("_index.md"))
 
-    # Walk again: --write may have renamed files.
+    company_changes, conflicts = migrate_companies(data_root, write)
+    changes.extend(company_changes)
+
+    # Walk again: --write may have renamed files. INDEX.md is generated, so its
+    # links are fixed by build_index, not by hand.
     broken = []
     for path in _walk(data_root):
-        if path.suffix != ".md":
+        if path.suffix != ".md" or rel(path) == "INDEX.md":
             continue
         text = path.read_text(encoding="utf-8")
         for m in re.finditer(r"\]\(([^)\s]+)\)", text):
@@ -138,7 +204,7 @@ def migrate(data_root: Path, argv: list[str] | None = None) -> dict:
                 continue
             if not os.path.exists(os.path.join(path.parent, unquote(target))):
                 broken.append(f"{rel(path)} -> {target}")
-    return {"write": write, "changes": changes, "broken": broken}
+    return {"write": write, "changes": changes, "conflicts": conflicts, "broken": broken}
 
 
 if __name__ == "__main__":
@@ -152,6 +218,8 @@ if __name__ == "__main__":
         print(f"{'Changed' if result['write'] else 'Would change'} ({len(changes)}):\n  " + "\n  ".join(changes))
     else:
         print("Nothing to migrate.")
+    if result["conflicts"]:
+        print(f"\nConflicts, not changed ({len(result['conflicts'])}):\n  " + "\n  ".join(result["conflicts"]))
     if broken:
         print(f"\nBroken links, not changed ({len(broken)}):\n  " + "\n  ".join(broken))
     if not result["write"] and changes:

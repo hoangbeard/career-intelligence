@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from helpers import add_job, script, temp_dir
@@ -60,6 +61,69 @@ class MigrateTest(unittest.TestCase):
         self.assertTrue((root / "profile/work-history/_index.md").exists())
         self.assertRegex(meta.read_text(), r"(?m)^schema: 5$")
         self.assertEqual(migrate(root, ["--write"])["changes"], [], "second run is a no-op")
+
+    def _old_company_layout(self):
+        root = temp_dir()
+        job = add_job(root, "acme", "2026-01-a", "JOB-2026-001")
+        (root / "companies/acme").mkdir(parents=True)
+        (root / "companies/acme/profile.md").write_text('---\ncompany: "Acme"\n---\nSee companies/client/profile.md\n')
+        (root / "companies/client").mkdir()
+        (root / "companies/client/profile.md").write_text('---\ncompany: "Client"\n---\n')
+        (root / "reports").mkdir()
+        (root / "reports/comparison.md").write_text("`companies/acme/profile.md`\n")
+        (root / "memory.md").write_text("- see companies/acme/profile.md\n")
+        (job / "report.md").write_text(
+            "Profile: companies/acme/profile.md, [ITviec](https://itviec.com/companies/acme/profile.md)\n"
+        )
+        kept = {
+            job / "source.md": "companies/acme/profile.md\n",
+            job / "jd.md": "companies/acme/profile.md\n",
+            job / "artifacts/sent.md": "companies/acme/profile.md\n",
+        }
+        (job / "artifacts").mkdir()
+        for path, text in kept.items():
+            path.write_text(text)
+        return root, job, kept
+
+    def test_moves_company_profiles_into_jobs_and_updates_paths(self):
+        root, job, kept = self._old_company_layout()
+
+        dry = migrate(root, [])
+        self.assertIn("companies/acme/profile.md -> jobs/acme/company.md", dry["changes"])
+        self.assertTrue((root / "companies/acme/profile.md").exists(), "dry run writes nothing")
+        self.assertNotIn("jobs/acme/company.md", (job / "report.md").read_text())
+
+        migrate(root, ["--write"])
+        self.assertFalse((root / "companies").exists())
+        self.assertIn("See jobs/client/company.md", (root / "jobs/acme/company.md").read_text())
+        self.assertTrue((root / "jobs/client/company.md").exists(), "a company without a job moves too")
+        self.assertEqual((root / "reports/comparison.md").read_text(), "`jobs/acme/company.md`\n")
+        self.assertEqual((root / "memory.md").read_text(), "- see jobs/acme/company.md\n")
+        self.assertEqual(
+            (job / "report.md").read_text(),
+            "Profile: jobs/acme/company.md, [ITviec](https://itviec.com/companies/acme/profile.md)\n",
+            "external URLs stay as they are",
+        )
+        for path, text in kept.items():
+            self.assertEqual(path.read_text(), text, f"{path.name} is kept as received")
+        self.assertEqual(migrate(root, ["--write"])["changes"], [], "second run is a no-op")
+
+        script("build_index.py", [], root)
+        index = json.loads((root / "index.json").read_text(encoding="utf-8"))
+        self.assertEqual([c["path"] for c in index["companies"]], ["jobs/acme/company.md", "jobs/client/company.md"])
+        self.assertEqual(index["job_count"], 1, "a company file is not a job")
+
+    def test_a_company_at_both_places_is_a_conflict_and_nothing_is_lost(self):
+        root, job, _ = self._old_company_layout()
+        (root / "jobs/acme/company.md").write_text("newer\n")
+
+        result = migrate(root, ["--write"])
+        self.assertEqual(len(result["conflicts"]), 1)
+        self.assertEqual((root / "jobs/acme/company.md").read_text(), "newer\n")
+        self.assertTrue((root / "companies/acme/profile.md").exists())
+        self.assertIn("companies/acme/profile.md", (job / "report.md").read_text(), "path stays valid")
+        self.assertTrue((root / "jobs/client/company.md").exists(), "other companies still move")
+        self.assertRegex(script("doctor.py", [], root).stdout, r"still in companies/")
 
 
 class DoctorTest(unittest.TestCase):

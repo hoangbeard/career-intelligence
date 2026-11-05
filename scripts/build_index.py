@@ -34,17 +34,17 @@ STATUS_ORDER = [
 
 
 def load_companies(data_root: Path) -> list[dict]:
-    directory = data_root / "companies"
+    directory = data_root / "jobs"
     if not directory.exists():
         return []
     rows = []
     for slug in sorted(p.name for p in directory.iterdir()):
-        path = directory / slug / "profile.md"
+        path = directory / slug / "company.md"
         if not path.exists():
             continue
         meta = parse_front_matter(path.read_text(encoding="utf-8"))
         name = meta.get("company")
-        rows.append({"slug": slug, "name": slug if name is None else name, "path": f"companies/{slug}/profile.md"})
+        rows.append({"slug": slug, "name": slug if name is None else name, "path": f"jobs/{slug}/company.md"})
     return rows
 
 

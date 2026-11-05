@@ -4,21 +4,52 @@
 
 ## Decision Card
 
-| Item | Assessment |
-|---|---|
-| Recommendation | Strong Apply \| Apply \| Apply If Interested \| Needs Info \| Low Priority \| Skip |
-| Overall Match | /100 |
-| Career Acceleration | /100 |
-| Role mix (JD vs target) | |
-| Seniority (inferred) | |
-| Location / work mode | |
-| Pay | fact or `Estimated` |
+<!-- At most 60 lines. Each table cell holds at most two short sentences. -->
 
-**Why chase:**
--
+**<Strong Apply | Apply | Apply If Interested | Needs Info | Low Priority | Skip>** · Overall Match /100 (band) · Career Acceleration /100 (band)
 
-**Concerns and risks:**
--
+<Role> · <location / work mode> · <seniority inferred> · Role mix <JD> vs <target>
+
+Main reason: <one sentence>
+
+### Company (researched YYYY-MM-DD, details in `jobs/<company-slug>/company.md`)
+
+| Item | Summary | Source · confidence |
+|---|---|---|
+| Overview | | |
+| Finance and business | | |
+| Employee reviews | | |
+| Hiring activity | | |
+| Pay range | Fact or `Estimated`, compared with the user's target | |
+| Interview process | | |
+| Leadership | | |
+| Controversies | Findings, or `not found` / `not accessible` / `not checked` | |
+
+### Job fit
+
+| Area | Matches | Gaps |
+|---|---|---|
+| Technical must-haves | | |
+| Technical nice-to-haves | | |
+| Soft skills | | |
+
+**Direction:** <which target roles it serves, role mix, opportunity cost>
+
+**Growth in 2–3 years:** <what the user would learn, realistic exit options, pay ceiling>
+
+### Decision
+
+**Why chase:** <up to 3 points>
+
+**Risks:** <up to 3 points>
+
+**Next:** <recruiter questions · 2–3 items to study · CV angle>
+
+---
+
+## Evidence
+
+<!-- For Skip or Low Priority, keep only Risks and Sources and assumptions. -->
 
 ### Requirement Match Matrix
 
@@ -26,28 +57,18 @@
 |---|---|---|---|---|
 | | Must | | Strong \| Partial \| Missing | |
 
+### Soft skills
+
+| Skill | Signal in JD | Evidence (company, year) | Match |
+|---|---|---|---|
+| | | | Strong \| Partial \| Missing |
+
 ### CV positioning
 
 - Headline:
 - Emphasise (recent work):
 - Do not claim:
-
-### Next
-
-- Recruiter questions:
-- Study (2–3 items):
-- CV:
-
----
-
-## Evidence
-
-### Company
-
-| Area | Score /10 | Notes |
-|---|---:|---|
-
-Culture signals (source, confidence):
+- CV file:
 
 ### Pay
 
@@ -67,4 +88,5 @@ Culture signals (source, confidence):
 ### Sources and assumptions
 
 - Work history verified: true / false
--
+- Job-specific sources (company sources are in `company.md`):
+- Assumptions:

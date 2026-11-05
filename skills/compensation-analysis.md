@@ -44,8 +44,10 @@ Always give:
 
 ## Where facts go
 
+- Ranges from public sources: **Public pay range** of the company file, with the
+  level, source and date.
 - Pay or benefit facts from the JD, the recruiter or the user: Hiring intel of
-  the company profile (`compensation` or `benefits`), scoped to the job unless
+  the company file (`compensation` or `benefits`), scoped to the job unless
   clearly company-wide.
 - The user's floor, target, walk-away point and what they already said: the
   job's `notes.md`. Never in Hiring intel, never in a message to a recruiter.

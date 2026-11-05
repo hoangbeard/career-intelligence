@@ -12,7 +12,7 @@ from lib.paths import DATA_ENV, REPO_ROOT
 
 def init(root: Path) -> list[str]:
     created = []
-    for directory in ("profile/work-history", "companies", "jobs", "reports"):
+    for directory in ("profile/work-history", "jobs", "reports"):
         path = root / directory
         if not path.exists():
             path.mkdir(parents=True)

@@ -63,8 +63,9 @@ In this guide and in `skills/`, `<data>/` means that path. Every path stored in
 ├── profile/
 │   ├── career-profile.md     # targets, preferences, language, scoring weights
 │   └── work-history/*.md     # the only source of evidence about the user
-├── companies/<company-slug>/profile.md
-├── jobs/<company-slug>/YYYY-MM-<role-slug>/
+├── jobs/<company-slug>/
+│   ├── company.md            # the company: public research and hiring intel
+│   └── YYYY-MM-<role-slug>/  # one folder per job
 ├── reports/                  # cross-job reports (comparisons)
 ├── instructions.md           # optional: the user's lasting preferences
 ├── memory.md                 # optional: durable facts learned across sessions
@@ -192,7 +193,9 @@ current when you change files without saving.
 ## Output rules
 
 - Put the decision first. The chat reply for a job analysis is the full
-  Decision Card (at most 80 lines), not a summary plus "see report.md".
+  Decision Card (at most 60 lines), not a summary plus "see report.md". It covers
+  the company from public sources, the job fit and the decision
+  (`templates/job-report.md`).
 - Use tables for scores. Always give numbers.
 - Separate facts (from the JD, recruiter or user) from your own inference.
 - State assumptions and open questions.
@@ -263,8 +266,9 @@ current when you change files without saving.
   | `artifacts/` | Tailored CV (`cv.md`, exported PDF, `cv-preview/`), message drafts, documents sent or received |
 
 - **Company profiles:** one file per company at
-  `<data>/companies/<company-slug>/profile.md`. Merge into it; never create a
-  duplicate. Facts about process, pay bands, benefits and hiring notes go in its
+  `<data>/jobs/<company-slug>/company.md`, next to the folders of its jobs. A
+  company with no job yet still gets one. Merge into it; never create a
+  duplicate. Facts learned about process, pay bands, benefits and hiring go in its
   **Hiring intel** log with a scope: `*` (company-wide) or a job ID. Default
   scope is the job being followed.
 - **Contact data:** `metadata.yml` records `contact_channel`, `contact_person`,

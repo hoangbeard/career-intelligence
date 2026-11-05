@@ -116,6 +116,8 @@ def report(pull: bool = False) -> list[str]:
     private = is_instance() and str(data_root).startswith(str(REPO_ROOT))
     out.append(f"data root: {data_root}{' (private instance)' if private else ''}")
     out.extend(profile_status(data_root))
+    if any((data_root / "companies").glob("*/profile.md")):
+        out.append("problem: company profiles are still in companies/ (run: python3 scripts/migrate.py --write)")
 
     jobs = load_jobs(data_root, allow_duplicates=True)
     for group in duplicate_groups(jobs):

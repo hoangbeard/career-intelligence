@@ -59,17 +59,17 @@ def renumber_job(data_root: Path, job_dir: Path) -> dict:
     company = meta.get("company_slug")
     same_company_clash = any(j["id"] == old_id and j.get("company_slug") == company for j in others)
     warnings = []
-    profile = data_root / "companies" / company / "profile.md" if company else None
+    profile = data_root / "jobs" / company / "company.md" if company else None
     if profile and profile.exists():
         text = _read(profile)
         if old_id in text:
             if same_company_clash:
                 warnings.append(
-                    f"companies/{company}/profile.md mentions {old_id}; two jobs of this company had it, fix by hand"
+                    f"jobs/{company}/company.md mentions {old_id}; two jobs of this company had it, fix by hand"
                 )
             else:
                 _write(profile, re.sub(r"\b" + re.escape(old_id) + r"\b", new_id, text))
-                changed.append(f"companies/{company}/profile.md")
+                changed.append(f"jobs/{company}/company.md")
     return {
         "old_id": old_id,
         "new_id": new_id,

@@ -149,7 +149,7 @@ flowchart LR
   JD[Job description] --> P[jd-pipeline skill]
   Profile[profile/ in your data folder] --> P
   P --> Job[jobs/company/YYYY-MM-role/<br/>report.md, metadata.yml, cv.md]
-  P --> Co[companies/company/profile.md]
+  P --> Co[jobs/company/company.md<br/>public research, hiring intel]
   Job --> Index[build_index.py<br/>INDEX.md, index.json]
   Job --> PDF[export_cv.py<br/>CV PDF + page previews]
 ```
@@ -160,9 +160,9 @@ Your data folder (`data/` in your instance):
 data/
 ├── profile/career-profile.md     # targets, role mix, language, pay
 ├── profile/work-history/*.md     # the only evidence source
-├── companies/<company>/profile.md
+├── jobs/<company>/company.md     # the company: public research, hiring intel
 ├── jobs/<company>/YYYY-MM-<role>/
-├── reports/
+├── reports/                      # comparisons across jobs
 ├── instructions.md               # optional: your lasting preferences
 ├── memory.md                     # optional: facts agents keep across sessions
 └── INDEX.md, index.json          # generated

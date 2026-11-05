@@ -6,22 +6,58 @@ hq: "unknown"
 industry: "unknown"
 size: "unknown"
 business_model: "unknown"   # product | outsourcing | consulting | hybrid | unknown
+researched_at: null         # YYYY-MM-DD of the last full public research (skills/company-analysis.md)
 updated_at: "YYYY-MM-DD"
 ---
 
 # <Company Display Name>
 
-## What they do
+<!-- For each researched section, write a short finding with its source and
+     confidence (high | medium | low), or one of: `not found` (searched, nothing
+     there), `not accessible` (source blocked), `not checked`. Date what can age. -->
 
-<Main products or services, target customers.>
+## Overview
 
-## Offices
+<Main products or services, customers, ownership, HQ and offices relevant to the user.>
 
-<HQ, country, offices relevant to the user.>
+## Finance and business
 
-## Industry, size, business model
+<Revenue, funding, profit or loss, growth, layoffs, market position.>
 
-<Product, outsourcing or consulting; headcount; revenue if known.>
+## Employee reviews
+
+<Rating and number of reviews per site, with the date; recurring themes, good and bad.>
+
+## Hiring activity
+
+<Open roles, hiring or freezing, turnover signals, how the company hires for this kind of role.>
+
+## Public pay range
+
+<Published or crowd-sourced ranges for similar roles, with level and date.>
+
+## Interview process
+
+<Public accounts of rounds, length and difficulty. Facts from the user's own process go in Hiring intel.>
+
+## Leadership
+
+<CEO or country head and the leader of the relevant function: background, tenure, recent changes.>
+
+## Controversies
+
+<Lawsuits, fines, unpaid wages, mass layoffs, breaches, public scandals. Report allegations as allegations and mark unconfirmed items.>
+
+## Assessment
+
+| Area | Score /10 | Basis |
+|---|---:|---|
+| Business quality | | |
+| Growth potential | | |
+| Financial stability | | |
+| Technology maturity | | |
+| Employer brand | | |
+| Career leverage | | |
 
 ## Applications
 
@@ -31,7 +67,7 @@ updated_at: "YYYY-MM-DD"
 
 ## Hiring intel
 
-<!-- Facts about process, pay, benefits and hiring.
+<!-- Facts about process, pay, benefits and hiring learned while following a job.
      Scope: `*` (company-wide) or a job ID. Default: the job being followed.
      Merge: add rows, never delete history. -->
 
@@ -47,6 +83,6 @@ updated_at: "YYYY-MM-DD"
 |---|---|---|---|---|
 | YYYY-MM-DD | process \| compensation \| benefits \| note | `*` \| JOB-YYYY-NNN | | |
 
-## Notes for candidates
+## Sources
 
-<Tech stack, culture, recent news, with sources and confidence.>
+- <URL, what it was used for, date read>

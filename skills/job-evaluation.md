@@ -1,6 +1,6 @@
 ---
 name: job-evaluation
-description: "The full job evaluation framework (company, requirement match, role mix, seniority, gaps, risks, scores, recommendation). Used by the JD pipeline, or when the user asks for a detailed evaluation of one job."
+description: "The full job evaluation framework (company, technical and soft skill match, role mix, seniority, direction and growth, risks, scores, recommendation). Used by the JD pipeline, or when the user asks for a detailed evaluation of one job."
 ---
 
 # Skill: Job evaluation framework
@@ -15,98 +15,80 @@ target path. Avoid generic summaries.
 ## Inputs
 
 - JD, recruiter message and hiring link, when available.
-- Company profile: `<data>/companies/<slug>/profile.md`.
+- Company file: `<data>/jobs/<slug>/company.md`.
 - Career profile: `<data>/profile/career-profile.md`.
 - Work history: `<data>/profile/work-history/` (the only evidence source).
 
+## Output
+
+Fill `templates/job-report.md`: the Decision Card first, then the evidence. Each
+step below names where its result goes. The card is at most 60 lines, so it
+carries conclusions and the evidence section carries the detail. For `Skip` or
+`Low Priority`, write the full card, then only risks and sources.
+
+To understand the role, first group the responsibilities with an estimated
+workload split and picture who would succeed in it. Those are working notes:
+use them in the steps below, and do not add them to the report.
+
 ## Process
 
-Start the output with the Decision Card (`templates/job-report.md`). For
-`Skip` or `Low Priority`, give the card and risks only.
+### 1. Company
 
-### 1. Snapshot
+Run `skills/company-analysis.md`. Summarise its eight sections in the **Company**
+table of the card, with sources and confidence. Do not score the company again.
 
-Company, role title, location, work mode, seniority inferred from the
-responsibilities, domain, recommendation.
-
-### 2. Company
-
-Background, country, ownership, industry and business model, main products,
-growth, stability, technology maturity, career upside.
-
-| Area | Score /10 | Notes |
-|---|---:|---|
-| Business growth | | |
-| Financial stability | | |
-| Technology maturity | | |
-| Innovation | | |
-| Learning opportunity | | |
-| Career opportunity | | |
-
-### 3. Requirement Match Matrix
+### 2. Technical match
 
 Check every must-have (and a nice-to-have only when it will matter in the
 interview) against work history. Evidence names the company and the year.
-
-| Requirement | Must/Nice | Evidence (company, year) | Match | Action |
-|---|---|---|---|---|
-| | Must | | Strong \| Partial \| Missing | Cover in CV / study / do not claim |
 
 - **Strong:** direct evidence inside the evidence window.
 - **Partial:** related work under another name.
 - **Missing:** no evidence. Never put it on the CV.
 
+Full table: **Requirement Match Matrix** in the evidence section. The card lists
+what matches and what does not, separately for must-haves and nice-to-haves.
+
+### 3. Soft skills
+
+Take the signals from the JD: stakeholder influence, mentoring, communication,
+working language, cross-team work, ambiguity. Match each against work history,
+with the same scale and the same evidence rule as technical skills. Do not assume
+a soft skill without evidence.
+
+Full table: **Soft skills** in the evidence section. The card gets one row. Feedback
+the user recorded about a skill (for example from an earlier interview) counts as
+a gap to show.
+
 ### 4. Role mix
 
 Estimate the real share of each role-mix dimension from the responsibilities.
-Compare with the target and the rules in the career profile.
+Compare with the target and the rules in the career profile. The result goes in
+the header line of the card.
 
-| Dimension | Estimated % | Evidence from JD |
-|---|---:|---|
-
-### 5. Soft skills
-
-| Skill | Score /10 | Evidence |
-|---|---:|---|
-
-### 6. Responsibilities
-
-Group the responsibilities. Use the groups that fit the field (for example
-hands-on delivery, architecture, operations, leadership, stakeholder
-management, governance, research). Estimate the workload split.
-
-| Area | Estimated % | Notes |
-|---|---:|---|
-
-### 7. Seniority
+### 5. Seniority
 
 Infer the real level, not the title: Senior IC, Staff, Principal, Lead,
-Manager, Head of. Explain why.
+Manager, Head of. Explain why when it differs from the title or from the user's
+current level. The result goes in the header line of the card.
 
-### 8. Ideal candidate
+### 6. Direction and growth
 
-Background, years of experience, technical depth, domain exposure,
-certifications (mandatory, preferred, bonus) and the top 5 hiring signals.
+Run `skills/career-prioritization.md`. It fills **Direction** and **Growth in 2–3
+years** on the card, and **Career** in the evidence section.
 
-### 9. Gaps
+### 7. Gaps and risks
 
-| Gap | Severity | Interview impact | Mitigation |
-|---|---|---|---|
+Look for gaps with real interview impact, and for: unrealistic expectations, scope
+creep, role ambiguity, understaffing, heavy paperwork, firefighting culture,
+limited authority, legacy constraints, low ownership.
 
-Severity: Minor, Moderate or Significant.
+Rate each one Minor, Moderate or Significant in the **Risks** table of the evidence
+section, with a mitigation. The top three go on the card.
 
-### 10. Risks
+### 8. Recommendation
 
-Look for: unrealistic expectations, scope creep, role ambiguity, understaffing,
-heavy paperwork, firefighting culture, limited authority, legacy constraints,
-low ownership.
-
-| Risk | Level | Why it matters | Mitigation |
-|---|---|---|---|
-
-### 11. Recommendation
-
-- Biggest advantages and biggest concerns.
 - Overall Match /100 and Career Acceleration /100. Weigh Overall Match with the
   weights in the career profile, if set.
-- Recommendation and next actions.
+- Apply the rules in "Effect on the decision" in `skills/company-analysis.md`.
+- Recommendation, main reason, and next actions.

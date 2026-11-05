@@ -4,19 +4,48 @@
 
 ## Decision Card
 
-| Item | Assessment |
-|---|---|
-| Recommendation | Apply |
-| Overall Match | 82/100 |
-| Career Acceleration | 88/100 |
-| Role mix (JD vs target) | 85/15 engineering and compliance vs target 70/30 |
-| Seniority (inferred) | Lead; hands-on programme owner with mentorship responsibility |
-| Location / work mode | Ho Chi Minh City / hybrid, two office days |
-| Pay | USD 5,500–7,000 monthly gross; 13th-month salary stated |
+**Apply** · Overall Match 82/100 (Strong fit) · Career Acceleration 88/100 (Strong career value)
 
-**Why chase:** Strong match to the user's cloud security and DevSecOps direction, with direct experience building CI/CD security gates, AWS guardrails, STRIDE threat modeling, and security champions. The role adds broader application security ownership and exposure to architecture across 12 teams. Published annualized base range is USD 66,000–84,000 before any 13th-month payment, above the USD 60,000 floor and includes the USD 72,000 target at the midpoint.
+Application Security Lead · Ho Chi Minh City, hybrid (two office days) · Lead, hands-on programme owner · Role mix 85/15 vs 70/30
 
-**Concerns and risks:** The JD does not specify a required secure code review language; work history does not establish Go, Java, or TypeScript review experience. It asks to mentor two AppSec engineers, while documented experience is leading a champions group rather than formal people management. Confirm that the advertised 13th-month salary is guaranteed and additional to the monthly range. Company details are fictional and provide no independently verifiable information about stability or culture.
+Main reason: direct evidence in CI/CD security gates and threat modeling, with broader AppSec ownership and a published range above the floor.
+
+### Company (fictional, details in `jobs/globex-cloud/company.md`)
+
+| Item | Summary | Source · confidence |
+|---|---|---|
+| Overview | API management SaaS, about 600 staff, HQ Singapore, hubs in Ho Chi Minh City and Warsaw | Company file · low (fictional) |
+| Finance and business | Series C; no revenue or profit figures | Company file · low (fictional) |
+| Employee reviews | `not checked`: the company is fictional | — |
+| Hiring activity | `not checked`: the company is fictional | — |
+| Pay range | USD 5,500–7,000 monthly gross plus 13th month; midpoint meets the USD 72,000 target | JD · high |
+| Interview process | `not checked`: the company is fictional | — |
+| Leadership | `not checked`: the company is fictional | — |
+| Controversies | `not checked`: the company is fictional | — |
+
+### Job fit
+
+| Area | Matches | Gaps |
+|---|---|---|
+| Technical must-haves | CI/CD security gates, threat modeling (STRIDE) | AppSec tenure, code review languages and ASVS depth are partial |
+| Technical nice-to-haves | AWS security | Kubernetes partial; bug bounty and SOC 2 missing |
+| Soft skills | Technical leadership through a champions group | Formal mentoring or line management not documented |
+
+**Direction:** serves Application Security Lead best (9/10) and also Security Architect (8/10). Compliance at 15% is within the user's preference.
+
+**Growth in 2–3 years:** threat modeling at scale and cross-team guardrails; realistic exits are AppSec Lead or Senior Cloud Security, and Security Architect if design authority is real.
+
+### Decision
+
+**Why chase:** strong match to the cloud security and DevSecOps direction; broader AppSec ownership across 12 teams; pay above the USD 60,000 floor.
+
+**Risks:** authority across teams is unclear; AppSec tenure and review languages are not fully evidenced; company facts cannot be verified.
+
+**Next:** ask about languages, who owns security gates, and whether the 13th month is guaranteed · study ASVS mapping, secure code review for the main stack, Kubernetes supply chain security · lead the CV with CI/CD gates and AWS guardrails
+
+---
+
+## Evidence
 
 ### Requirement Match Matrix
 
@@ -32,36 +61,19 @@
 | Bug bounty programme management | Nice | No evidence in work history | Missing | Ask about existing programme and prepare a triage approach; do not claim ownership |
 | SOC 2 experience | Nice | Vandelay, 2021: technical evidence support for ISO 27001; no SOC 2 evidence | Missing | Position adjacent evidence accurately; ask how much of the stated 15% is evidence collection |
 
+### Soft skills
+
+| Skill | Signal in JD | Evidence (company, year) | Match |
+|---|---|---|---|
+| Mentoring | Mentor two AppSec engineers | Initech, 2022–2026: ran champions group of 8 engineers; no formal line management | Partial |
+| Cross-team influence | Programme across 12 product teams | Initech, 2022–2026: champions group and security gates across 60 repositories | Strong |
+
 ### CV positioning
 
 - Headline: Senior Cloud Security Engineer | Application Security & DevSecOps
 - Emphasise (recent work): CI/CD scanning gates across 60 repositories, AWS guardrails across 40 accounts, STRIDE reviews, champions group of eight.
 - Do not claim: Formal management of engineers, SOC 2 ownership, bug bounty ownership, or specific Go/Java/TypeScript code review absent confirmation.
-
-### Next
-
-- Recruiter questions: What languages and frameworks are most common? Is the 13th-month salary guaranteed and in addition to the stated monthly range? What authority does the lead have to set engineering standards and block releases? Is bug bounty established or expected to be built? How much of the 15% compliance time is evidence preparation?
-- Study (2–3 items): Current OWASP Top 10 and ASVS mapping; language-specific secure code review for the product's primary stack; Kubernetes workload and supply chain security.
-- CV: `artifacts/cv.md`.
-
----
-
-## Evidence
-
-### Company
-
-| Area | Score /10 | Notes |
-|---|---:|---|
-| Business growth | 7 | JD describes an API management SaaS serving 2,000 companies; independent growth evidence unavailable. |
-| Financial stability | 5 | The existing fictional profile describes a series C company; no financial figures or current stability evidence. |
-| Technology maturity | 7 | 12 product teams and a platform used by 2,000 companies suggest meaningful engineering scale; inference from the JD. |
-| Innovation | 7 | API management platform and secure development programme offer relevant technical scope; inference. |
-| Learning opportunity | 8 | Cross-team AppSec ownership, threat modeling, and platform guardrails match growth areas. |
-| Career opportunity | 8 | Lead scope can strengthen architecture and programme ownership, if decision authority is real. |
-
-Company classification: product company, SaaS, developer platform. The JD and existing company profile are fictional; company scores are provisional and based only on those materials.
-
-Culture signals (source, confidence): No independently verifiable signals supplied.
+- CV file: `artifacts/cv.md`.
 
 ### Pay
 

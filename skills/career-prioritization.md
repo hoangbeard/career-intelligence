@@ -9,6 +9,16 @@ Judge strategic value, not only fit. Read the target roles, preferred domains
 and role mix from `<data>/profile/career-profile.md`. Never use a fixed list
 of roles.
 
+## What goes on the Decision Card
+
+- **Direction:** the target roles the job serves best, how the role mix compares,
+  and the opportunity cost, in one or two sentences.
+- **Growth in 2–3 years:** what the user would learn, realistic exit options and
+  the pay ceiling, in one or two sentences.
+
+The tables below go in the **Career** part of the evidence section. Show only the
+ones that change the decision.
+
 ## Career Acceleration
 
 One row per target role in the profile.
